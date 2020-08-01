@@ -1,6 +1,8 @@
 use Test;
+
 use Abbreviations;
 
-pass "replace me";
+plan 1;
 
-done-testing;
+use-ok 'Abbreviations';
+
