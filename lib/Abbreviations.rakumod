@@ -1,12 +1,11 @@
-unit class Abbreviations:ver<0.0.1>:auth<cpan:TBROWDER>;
+unit module Abbreviations:ver<0.0.1>:auth<cpan:TBROWDER>;
 
 =begin pod
 
 =head1 NAME
 
-Abbreviations - provides a list of unique abbreviations for an input set of one
-or more unique words. (Note the input words are also
-abbreviations in the context of this module.)
+Abbreviations - provides abbreviations for an input set of one or more words
+
 
 =head1 SYNOPSIS
 
@@ -20,25 +19,23 @@ my %abbrevs = abbreviations $words;
 
 =head1 DESCRIPTION
 
-Abbreviations is a module with one exported multi subroutine 'abbreviations'.
+B<Abbreviations] is a module with one exported multi subroutine, C<abbreviations>,
+which takes as input a set of words and returns the original set with added
+unique abbreviations for the set.  (Note the input words are also
+abbreviations in the context of this module.)
 
-The input word set can be (1) a string containing the words separated by spaces, (2) a
+The input word set can be in one of three forms: (1) a string containing the words separated by spaces, (2) a
 list, or (3) a hash with the words as keys. Duplicate words will be
-eliminated with a warning (default) or an exception if desired.
+eliminated quietly (the default) or with a warning if desired.
 
 One will get the result in the same form as the input set, e.g., a list input
 will return a list.
 Note the results as string or list will contain
-the original words as well as any other valid abbreviated form. The hash returned will have empty strings for those
-keys without a shorter abbreviation and a string of one or more valid but shorter abbreviations.
+the original words as well as any other valid abbreviated form. The hash returned will have
+input words as keys whose value will be ither empty strings for those
+keys without a shorter abbreviation or a string of one or more valid but shorter abbreviations for others.
 
-(2) a list, 
-or (3) a string with words separated by spaces,
-(1) a hash (default) with the input words as keys and abbreviations as values (in a string
-of space-separated words). 
-
-
-For example, given
+For example, given an input set consisting of the words
 
     a 
     ab 
@@ -54,7 +51,7 @@ the list of abbreviations (which incudes the original words) is
 
 One can also ask for a hash which will show the abbreviations
 attached as a string to the parent word. That result for the previous input
-example
+example is
 
     a     => '', 
     ab    => '',
