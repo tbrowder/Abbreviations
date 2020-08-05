@@ -12,13 +12,42 @@ Abbreviations - provides abbreviations for an input set of one or more words
 
 use Abbreviations;
 my $words = 'a ab abcde';
+# The main exported routine:
 my %abbrevs = abbreviations $words;
 
 =end code
 
+There are two shorter routine name abbreviations one can use that are always exported:
+
+=begin code :lang<raku>
+ abbrevs
+ abbrev
+=end code
+
+In the sprit of the module, one can C<use Abbreviations :ALL;>
+and have these additional short forms are available:
+
+=begin code :lang<raku>
+ abbre
+ abbr
+ abb
+ ab
+ a
+=end code
+
+Each of those is individually available by adding its name as an adverb, e.g.:
+
+=begin code :lang<raku>
+
+use Abbreviations :abb;
+my %abb = abb $words;
+
+=end code
+
+
 =head1 DESCRIPTION
 
-B<Abbreviations] is a module with one exported multi subroutine,
+B<Abbreviations> is a module with one exported multi subroutine,
 C<abbreviations>, which takes as input a set of words and returns the
 original set with added unique abbreviations for the set.  (Note the
 input words are also abbreviations in the context of this module.)
@@ -34,26 +63,30 @@ with the words as keys. Duplicate words will be automatically
 eliminated, but you can use the ':warn' option if you want to be
 notified.
 
-One will normally get the result as a Hash, but the return type can be
-specified if desired.  Note the results as string or list will contain
+One will normally get the result as a C<Hash>, but the return type can be
+specified if desired.  Note the results as C<Str> or C<List> will contain
 the original words as well as any other valid abbreviated form. The
-hash returned will have input words as keys whose value will be either
+C<Hash> returned will have input words as keys whose value will be either
 empty strings for those keys without a shorter abbreviation or a
 string of one or more valid but shorter abbreviations for others.
 
 For example, given an input set consisting of the words
 
-    a
-    ab
-    abcde
+=begin code
+a
+ab
+abcde
+=end code
 
 the list of abbreviations (which incudes the original words) is
 
+=begin code
     a
     ab
     abc    # <== abbreviation for abcde
     abcd   # <== abbreviation for abcde
     abcde
+=end code
 
 The default hash returned which will show the abbreviations attached
 as a string to the parent word. That result for the previous input
@@ -75,7 +108,7 @@ Tom Browder <tom.browder@gmail.com>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (&#x00A9;)2020 Tom Browder
+Copyright &#x00A9; 2020 Tom Browder
 
 This library is free software; you can redistribute it and/or modify it under the Artistic License 2.0.
 
@@ -128,8 +161,14 @@ sub check-dups($words where Str|List --> Str) {
     return %w.keys.sort.join(' ');
 } # end sub
 
-# define a "alias" for convenience
-our &abbrevs is export = &abbreviations;
+# define  "aliases" for convenience
+our &abbrevs is export         = &abbreviations;
+our &abbrev  is export         = &abbreviations;
+our &abbre   is export(:abbre) = &abbreviations;
+our &abbr    is export(:abbr)  = &abbreviations;
+our &abb     is export(:abb)   = &abbreviations;
+our &ab      is export(:ab)    = &abbreviations;
+our &a       is export(:a)     = &abbreviations;
 sub abbreviations($word-set where Str|List|Hash,
                   :$warn = 0,
                   # Make the return type different from the input set
@@ -223,12 +262,13 @@ sub abbreviations($word-set where Str|List|Hash,
             elsif $word-set ~~ List {
                 @ow.push: $a;
             }
+            # Hashes need extra attention because the key (the primary
+            # word) is already in the output set
             elsif $word-set ~~ Hash and $len < $nc {
-                my $v = %ow{$w};
-                %ow{$w} ~= ' ' if $v;
+                %ow{$w} ~= ' ' if %ow{$w};
                 %ow{$w} ~= $a;
             }
-            ++$len
+            ++$len;
         }
     }
 
@@ -251,11 +291,11 @@ sub abbreviations($word-set where Str|List|Hash,
 
 sub auto-abbreviation(Str $string --> UInt) {
     # Given a string consisting of space-separated words, return the
-    # minimum number of characters to abbreviate the set.
-    # WARNING: Inf is returned if there are duplicate words in the
-    # string, so the user is warned to avoid that or catch the error
-    # exception.
-    # Source: http://rosettacode.org/?
+    # minimum number of characters to abbreviate the set.  WARNING:
+    # Inf is returned if there are duplicate words in the string, so
+    # the user is warned to avoid that or catch the error exception.
+    #
+    # Source: http://rosettacode.org/wiki/Abbreviations,_automatic#Raku
     return Nil unless my @words = $string.words;
     return $_ if @words>>.substr(0, $_).Set == @words for 1 .. @words>>.chars.max;
     return Inf;
