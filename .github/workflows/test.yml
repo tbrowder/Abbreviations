@@ -12,8 +12,8 @@ jobs:
       matrix:
         os:
           - ubuntu-latest
-          - macOS-latest
-          - windows-latest
+          #- macOS-latest
+          #- windows-latest
         raku-version:
           - "2020.07"
           - "2019.11"
