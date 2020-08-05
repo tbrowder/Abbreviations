@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.com/tbrowder/Abbreviations.svg?branch=master)](https://travis-ci.com/tbrowder/Abbreviations)
+[![Actions Status](https://github.com/tbrowder/Abbreviations/workflows/test/badge.svg)](https://github.com/tbrowder/Abbreviations/actions)
 
 NAME
 ====
