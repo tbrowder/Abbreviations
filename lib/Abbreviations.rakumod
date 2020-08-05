@@ -6,7 +6,6 @@ unit module Abbreviations:ver<0.0.1>:auth<cpan:TBROWDER>;
 
 Abbreviations - provides abbreviations for an input set of one or more words
 
-
 =head1 SYNOPSIS
 
 =begin code :lang<raku>
@@ -19,41 +18,48 @@ my %abbrevs = abbreviations $words;
 
 =head1 DESCRIPTION
 
-B<Abbreviations] is a module with one exported multi subroutine, C<abbreviations>,
-which takes as input a set of words and returns the original set with added
-unique abbreviations for the set.  (Note the input words are also
-abbreviations in the context of this module.)
+B<Abbreviations] is a module with one exported multi subroutine,
+C<abbreviations>, which takes as input a set of words and returns the
+original set with added unique abbreviations for the set.  (Note the
+input words are also abbreviations in the context of this module.)
 
-The input word set can be in one of three forms: (1) a string containing the words separated by spaces, (2) a
-list, or (3) a hash with the words as keys. Duplicate words will be
-automatically eliminated.
+A B<word> satisfies the Raku regex: C<$word ~~ /\S+/> which is quite
+loose. Using programs can of course further restrict that if need
+be. For example, for use with module B<Opt::Handler> words must
+satisfy this regex: C<$word ~~ /<ident>/>.
 
-One will get the result in the same form as the input set, e.g., a list input
-will return a list.
-Note the results as string or list will contain
-the original words as well as any other valid abbreviated form. The hash returned will have
-input words as keys whose value will be ither empty strings for those
-keys without a shorter abbreviation or a string of one or more valid but shorter abbreviations for others.
+The input word set can be in one of three forms: (1) a string
+containing the words separated by spaces, (2) a list, or (3) a hash
+with the words as keys. Duplicate words will be automatically
+eliminated, but you can use the ':warn' option if you want to be
+notified.
+
+One will normally get the result as a Hash, but the return type can be
+specified if desired.  Note the results as string or list will contain
+the original words as well as any other valid abbreviated form. The
+hash returned will have input words as keys whose value will be either
+empty strings for those keys without a shorter abbreviation or a
+string of one or more valid but shorter abbreviations for others.
 
 For example, given an input set consisting of the words
 
-    a 
-    ab 
+    a
+    ab
     abcde
 
 the list of abbreviations (which incudes the original words) is
 
-    a 
-    ab 
+    a
+    ab
     abc    # <== abbreviation for abcde
-    abcd   # <== abbreviation for abcde 
+    abcd   # <== abbreviation for abcde
     abcde
 
-One can also ask for a hash which will show the abbreviations
-attached as a string to the parent word. That result for the previous input
+The default hash returned which will show the abbreviations attached
+as a string to the parent word. That result for the previous input
 example is
 
-    a     => '', 
+    a     => '',
     ab    => '',
     abcde => 'abc abcd'
 
@@ -61,95 +67,137 @@ example is
 
 Tom Browder <tom.browder@gmail.com>
 
+=head1 CREDITS
+
+=item Leon Timmermans (aka @Leont) for inspiration from his Raku module C<Getopt::Long>.
+
+=item The Raku community for help with subroutine signatures.
+
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2020 Tom Browder
+Copyright (&#x00A9;)2020 Tom Browder
 
 This library is free software; you can redistribute it and/or modify it under the Artistic License 2.0.
 
 =end pod
 
-multi sub abbreviations(List @words, 
-                        :$warn       = 0,
-                        :$check-dups = 0,
-                        :$return-type where { Str|Hash }
-                       ) is export {
-    # Given a set of words, determine the shortest unique abbreviation
-    # for each word. 
-
-    # Return a list of the input words 
-    # in addition to their unique shorter abbreviations, if any.
-
-}
-
-multi sub abbreviations(Str $words, 
-                        :$warn       = 0,
-                        :$check-dups = 0,
-                        :$return-type where { List|Hash },
-                       ) is export {
-    # Given a set of words, determine the shortest unique abbreviation
-    # for each word. 
-
-    # Return a space-separated string of the input words 
-    # in addition to their unique shorter abbreviations, if any.
-
-    # First convert input to format for the master subs
-    my %w = set $words.words;
-    %w = abbreviations %w;
-    # Then convert return into proper return form for this sub
-    my $abbrevs = ''; 
-    for %w.kv -> $w, $a {
-        $abbrevs ~= ' ' if $abbrevs; # no leading space for the first word 
-        $abbrevs ~= $w;
-        $abbrevs ~= " $a" if $a;
+sub check-type($arg, Str :$valid-types! where {/Str|List|Hash/}  --> Pair) {
+    # Given an arg of unknown type and
+    # a string with one or more desired type names as words
+    # from the set [Str List Hash],
+    # return the type found as a pair with the type name as
+    # key and validity (True or False) as value.
+    my $typ = $arg.^name;
+    if $typ ~~ /$valid-types/ {
+        return $typ => True;
     }
-    $abbrevs;
+    return $typ => False;
 }
 
-multi sub abbreviations(%words, 
-                        :$return-type where { Str|List },
-                       ) is export {
-}
+sub check-dups($words where Str|List --> Str) {
+    # The input is either a Str or a List.
+    # The return is a sorted string for input into auto-abbrev.
+    my @w;
+    given $words {
+        when Str {
+            @w = $_.words;
+        }
+        when List {
+            @w = $_;
+        }
+        default {
+            die "Unhandled input type '{$words.^name}'";
+        }
+    }
 
-# Following is the "master" sub. The multis will call it.
-sub get-abbrevs($word-set where { Str|List|Hash }, 
-                :$warn        = 0,
-                :$check-dups  = 0,
-                # make the return type different from the input set type
-                :$return-type where { Str|List|Hash },
-               ) {
+    my %w;
+    my @dups;
+    for @w -> $w {
+        if %w{$w}:exists {
+            @dups.push: $w;
+            next;
+        }
+        %w{$w} = True;
+    }
+
+    if @dups.elems {
+        note "WARNING: Found the following duplicate words:";
+        note "  $_" for @dups.sort;
+    }
+
+    return %w.keys.sort.join(' ');
+} # end sub
+
+# define a "alias" for convenience
+our &abbrevs is export = &abbreviations;
+sub abbreviations($word-set where Str|List|Hash,
+                  :$warn = 0,
+                  # Make the return type different from the input set
+                  # type but only if the return type is different:
+                  :$return-type where {/Str|List|Hash|Default/} = 'Default',
+                 ) is export {
     # Given a set of words, determine the shortest unique abbreviation
-    # for each word. 
+    # for each word.
 
-    my $input-str;
-    my $input-typ;
+    my Str $abbrev-str;
+    my $in-typ;
+    my $out-typ;
     if $word-set ~~ Str {
-        $input-str = $word-set;
+        $abbrev-str = $word-set;
+        $in-typ = 'Str';
+        $abbrev-str = check-dups($abbrev-str) if $warn;
+
+        # determine output type
+        if $return-type ne 'Default' {
+            die "Tom, fix this";
+        }
+        else {
+            $out-typ = $in-typ;
+        }
     }
     elsif $word-set ~~ List {
-        $input-str = $word-set.sort.join(' ');
+        $abbrev-str = $word-set.sort.join(' ');
+        $in-typ = 'List';
+        $abbrev-str = check-dups($abbrev-str) if $warn;
+
+        # determine output type
+        if $return-type ne 'Default' {
+            die "Tom, fix this";
+        }
+        else {
+            $out-typ = $in-typ;
+        }
     }
     elsif $word-set ~~ Hash {
-        $input-str = $word-set.keys.sort.join(' ');
+        $abbrev-str = $word-set.keys.sort.join(' ');
+        $in-typ = 'Hash';
+
+        # determine output type
+        if $return-type ne 'Default' {
+            die "Tom, fix this";
+        }
+        else {
+            $out-typ = $in-typ;
+        }
     }
     else {
         die "FATAL: Cannot handle word set format '{$word-set.^name}'";
     }
-   
+
     # Return a hash of the input words as keys whose value is
     # a space-separated string
     # of their unique shorter abbreviations, if any.
-    
+
     # Get the max number of characters needed to have a unique abbreviation.
     # If the number of characters in a word is equal or less,
     # then it has no abbreviation.
-    my $max-chars = auto-abbreviation $input-str;
+    my $max-chars = auto-abbreviation $abbrev-str;
 
     # prepare the desired output
     my %ow;
     my @ow;
     my $ow = '';
-    for $input-str.words.sort -> $w {
+    for $abbrev-str.words.sort -> $w {
         %ow{$w} = '';
         my $nc = $w.chars;
         if $nc <= $max-chars {
@@ -166,32 +214,47 @@ sub get-abbrevs($word-set where { Str|List|Hash },
 
         # handle the abbreviations
         my $len = $max-chars;
-        while $len < $nc {
+        while $len <= $nc {
             my $a = $w.substr(0, $len);
             if $word-set ~~ Str {
                 $ow ~= ' ' if $ow;
-                $ow ~= $w;
+                $ow ~= $a;
             }
             elsif $word-set ~~ List {
-                @ow.push: $w;
+                @ow.push: $a;
             }
-            elsif $word-set ~~ Hash {
-                %ow{$w} ~= " $a";
-                @ow.push: $w;
+            elsif $word-set ~~ Hash and $len < $nc {
+                my $v = %ow{$w};
+                %ow{$w} ~= ' ' if $v;
+                %ow{$w} ~= $a;
             }
-     
             ++$len
         }
     }
-    # the return depends on the input type
+
+    # the return depends on the input type by default
+    if $in-typ eq $out-typ {
+        if $word-set ~~ Str {
+            return $ow;
+        }
+        elsif $word-set ~~ List {
+            return @ow;
+        }
+        elsif $word-set ~~ Hash {
+            return %ow;
+        }
+    }
+    else {
+        die "Tom, fix this";
+    }
 }
 
 sub auto-abbreviation(Str $string --> UInt) {
-    # Given a string consisting of space-separated words, return the minimum number
-    # of characters to abbreviate the set.
-    # WARNING: Inf is returned if there are duplicate words in the string,
-    # so the user is warned to avoid that or catch the error exception.
-    # 
+    # Given a string consisting of space-separated words, return the
+    # minimum number of characters to abbreviate the set.
+    # WARNING: Inf is returned if there are duplicate words in the
+    # string, so the user is warned to avoid that or catch the error
+    # exception.
     # Source: http://rosettacode.org/?
     return Nil unless my @words = $string.words;
     return $_ if @words>>.substr(0, $_).Set == @words for 1 .. @words>>.chars.max;

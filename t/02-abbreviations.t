@@ -7,8 +7,23 @@ use Abbreviations;
 # good input test data
 # EXPECTED
 my $in-words = 'a ab abcde';
+my $out-words = 'a ab abc abcd abcde';
+
 my @in-words = $in-words.words;
+my @out-words = <a ab abc abcd abcde>;
 my %in-words = set @in-words;
+my %out-words = %(
+    a     => '', 
+    ab    => '',
+    abcde => 'abc abcd'
+);
+
+plan 4;
+
+is-deeply abbreviations($in-words), $out-words;
+is-deeply abbreviations(@in-words), @out-words;
+is-deeply abbreviations(%in-words), %out-words;
+is-deeply abbrevs(%in-words), %out-words;
 
 # faulty test data
 # leading or trailing space
@@ -43,15 +58,31 @@ example is
 # send string, get string
 #   check options
 
+# send string, get list
+#   check options
+
+# send string, get hash
+#   check options
+
+#= LIST INPUT
 # send list, get string
-# check options
+#   check options
+
+# send list, get list
+#   check options
 
 # send list, get hash
+#   check options
 
+#= HASH INPUT
+# send hash, get string
+#   check options
 
-# place holder for now
-is "e", "e";
+# send hash, get list
+#   check options
 
-done-testing;
+# send hash, get hash
+#   check options
+
 
 
