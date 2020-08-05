@@ -52,19 +52,17 @@ One will normally get the result as a `Hash`, but the return type can be specifi
 
 For example, given an input set consisting of the words
 
-  * a
-
-  * ab
-
-  * abcde
+    a
+    ab
+    abcde
 
 the list of abbreviations (which incudes the original words) is
 
-    a
-    ab
-    abc    # <== abbreviation for abcde
-    abcd   # <== abbreviation for abcde
-    abcde
+        a
+        ab
+        abc    # <== abbreviation for abcde
+        abcd   # <== abbreviation for abcde
+        abcde
 
 The default hash returned which will show the abbreviations attached as a string to the parent word. That result for the previous input example is
 
