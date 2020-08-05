@@ -104,13 +104,15 @@ Tom Browder <tom.browder@gmail.com>
 
 =item Leon Timmermans (aka @Leont) for inspiration from his Raku module C<Getopt::Long>.
 
+=item The original author of the C<auto-abbreviations> algorithm on L<Rosetta Code|http://rosettacode.org/wiki/Abbreviations,_automatic#Raku>.
+
 =item The Raku community for help with subroutine signatures.
 
 =head1 COPYRIGHT AND LICENSE
 
 Copyright &#x00A9; 2020 Tom Browder
 
-This library is free software; you can redistribute it and/or modify it under the Artistic License 2.0.
+This library is free software; you can redistribute it or modify it under the Artistic License 2.0.
 
 =end pod
 

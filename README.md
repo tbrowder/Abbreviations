@@ -80,6 +80,8 @@ CREDITS
 
   * Leon Timmermans (aka @Leont) for inspiration from his Raku module `Getopt::Long`.
 
+  * The original author of the `auto-abbreviations` algorithm on [Rosetta Code](http://rosettacode.org/wiki/Abbreviations,_automatic#Raku).
+
   * The Raku community for help with subroutine signatures.
 
 COPYRIGHT AND LICENSE
@@ -87,5 +89,5 @@ COPYRIGHT AND LICENSE
 
 Copyright &#x00A9; 2020 Tom Browder
 
-This library is free software; you can redistribute it and/or modify it under the Artistic License 2.0.
+This library is free software; you can redistribute it or modify it under the Artistic License 2.0.
 
