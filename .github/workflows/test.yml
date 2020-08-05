@@ -24,7 +24,9 @@ jobs:
       - run: raku -V
       - name: Install dependencies
         run: |
-          zef install --/test --deps-only .
+          # install and test if need be (includes [test-depends])
+          zef install .
+          #zef install --/test --deps-only .
           zef install --/test App::Prove6
       - name: Run tests
         run: prove6 -l t

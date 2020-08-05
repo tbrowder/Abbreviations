@@ -5,7 +5,6 @@
   ],
   "build-depends" : [ ],
   "depends" : [
-    "Test::META"
   ],
   "description" : "provides abbreviations for an input set of one or more words",
   "license" : "Artistic-2.0",
@@ -21,6 +20,8 @@
     "abbreviations",
     "options"
   ],
-  "test-depends" : [ ],
+  "test-depends" : [
+    "Test::META"
+  ],
   "version" : "0.0.1"
 }
