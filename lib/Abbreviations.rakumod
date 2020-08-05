@@ -104,7 +104,7 @@ Tom Browder <tom.browder@gmail.com>
 
 =item Leon Timmermans (aka @Leont) for inspiration from his Raku module C<Getopt::Long>.
 
-=item The original author of the C<auto-abbreviations> algorithm on L<Rosetta Code|http://rosettacode.org/wiki/Abbreviations,_automatic#Raku>.
+=item @Thundergnat, the original author of the Raku C<auto-abbreviate> algorithm on L<Rosetta Code|http://rosettacode.org/wiki/Abbreviations,_automatic#Raku>.
 
 =item The Raku community for help with subroutine signatures.
 
@@ -232,7 +232,7 @@ sub abbreviations($word-set where Str|List|Hash,
     # Get the max number of characters needed to have a unique abbreviation.
     # If the number of characters in a word is equal or less,
     # then it has no abbreviation.
-    my $max-chars = auto-abbreviation $abbrev-str;
+    my $max-chars = auto-abbreviate $abbrev-str;
 
     # prepare the desired output
     my %ow;
@@ -291,7 +291,7 @@ sub abbreviations($word-set where Str|List|Hash,
     }
 }
 
-sub auto-abbreviation(Str $string --> UInt) {
+sub auto-abbreviate(Str $string --> UInt) {
     # Given a string consisting of space-separated words, return the
     # minimum number of characters to abbreviate the set.  WARNING:
     # Inf is returned if there are duplicate words in the string, so

@@ -80,7 +80,7 @@ CREDITS
 
   * Leon Timmermans (aka @Leont) for inspiration from his Raku module `Getopt::Long`.
 
-  * The original author of the `auto-abbreviations` algorithm on [Rosetta Code](http://rosettacode.org/wiki/Abbreviations,_automatic#Raku).
+  * @Thundergnat, the original author of the Raku `auto-abbreviate` algorithm on [Rosetta Code](http://rosettacode.org/wiki/Abbreviations,_automatic#Raku).
 
   * The Raku community for help with subroutine signatures.
 
