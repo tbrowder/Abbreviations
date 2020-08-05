@@ -14,7 +14,11 @@
   },
   "resources" : [ ],
   "source-url" : "https://github.com/tbrowder/Abbreviations.git",
-  "tags" : [ ],
+  "tags" : [
+    "text",
+    "abbreviations",
+    "options"
+  ],
   "test-depends" : [
     "Test::Meta"
   ],
