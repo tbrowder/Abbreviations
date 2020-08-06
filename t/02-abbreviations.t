@@ -16,11 +16,27 @@ my %out-words = %(
     abcde => 'abc abcd'
 );
 
-plan 10;
+plan 19;
 
-is-deeply abbreviations($in-words), $out-words;
-is-deeply abbreviations(@in-words), @out-words;
+# basic in/out
+# 12 tests
+is-deeply abbreviations($in-words), %out-words;
+is-deeply abbreviations($in-words, :Str), $out-words;
+is-deeply abbreviations($in-words, :List), @out-words;
+is-deeply abbreviations($in-words, :Str, :List), @out-words;
+
+is-deeply abbreviations(@in-words), %out-words;
+is-deeply abbreviations(@in-words, :Str), $out-words;
+is-deeply abbreviations(@in-words, :List), @out-words;
+is-deeply abbreviations(@in-words, :Str, :List), @out-words;
+
 is-deeply abbreviations(%in-words), %out-words;
+is-deeply abbreviations(%in-words, :Str), $out-words;
+is-deeply abbreviations(%in-words, :List), @out-words;
+is-deeply abbreviations(%in-words, :Str, :List), @out-words;
+
+# checking aliases
+# 7 tests
 is-deeply abbrevs(%in-words), %out-words;
 is-deeply abbrev(%in-words), %out-words;
 is-deeply abbre(%in-words), %out-words;

@@ -25,7 +25,7 @@ There are two shorter routine name abbreviations one can use that are always exp
 =end code
 
 In the sprit of the module, one can C<use Abbreviations :ALL;>
-and have these additional short forms are available:
+and have these additional short forms available:
 
 =begin code :lang<raku>
  abbre
@@ -64,7 +64,15 @@ eliminated, but you can use the ':warn' option if you want to be
 notified.
 
 One will normally get the result as a C<Hash>, but the return type can be
-specified if desired.  Note the results as C<Str> or C<List> will contain
+specified if desired by selecting either option C<:Str> or option C<:List>
+(the List takes precedence silently if both are selected):  
+
+=begin code
+my $abbrevs = abbrevs $words, :Str;
+my @abbrevs = abbrevs $words, :List;
+=end code
+
+Note the results as C<Str> or C<List> will contain
 the original words as well as any other valid abbreviated form. The
 C<Hash> returned will have input words as keys whose value will be either
 empty strings for those keys without a shorter abbreviation or a
@@ -112,22 +120,9 @@ Tom Browder <tom.browder@gmail.com>
 
 Copyright &#x00A9; 2020 Tom Browder
 
-This library is free software; you can redistribute it or modify it under the Artistic License 2.0.
+This library is free software; you may redistribute it or modify it under the Artistic License 2.0.
 
 =end pod
-
-sub check-type($arg, Str :$valid-types! where {/Str|List|Hash/}  --> Pair) {
-    # Given an arg of unknown type and
-    # a string with one or more desired type names as words
-    # from the set [Str List Hash],
-    # return the type found as a pair with the type name as
-    # key and validity (True or False) as value.
-    my $typ = $arg.^name;
-    if $typ ~~ /$valid-types/ {
-        return $typ => True;
-    }
-    return $typ => False;
-}
 
 sub check-dups($words where Str|List --> Str) {
     # The input is either a Str or a List.
@@ -173,59 +168,41 @@ our &ab      is export(:ab)    = &abbreviations;
 our &a       is export(:a)     = &abbreviations;
 sub abbreviations($word-set where Str|List|Hash,
                   :$warn = 0,
-                  # Make the return type different from the input set
-                  # type but only if the return type is different:
-                  :$return-type where {/Str|List|Hash|Default/} = 'Default',
+                  #= Make the return type be either
+                  #= Str or List instead of the default Hash.
+                  #= List takes precednce if both are true.
+                  :$Str  = 0,
+                  :$List = 0,
                  ) is export {
     # Given a set of words, determine the shortest unique abbreviation
     # for each word.
 
     my Str $abbrev-str;
     my $in-typ;
-    my $out-typ;
     if $word-set ~~ Str {
         $abbrev-str = $word-set;
         $in-typ = 'Str';
         $abbrev-str = check-dups($abbrev-str) if $warn;
-
-        # determine output type
-        if $return-type ne 'Default' {
-            die "Tom, fix this";
-        }
-        else {
-            $out-typ = $in-typ;
-        }
     }
     elsif $word-set ~~ List {
         $abbrev-str = $word-set.sort.join(' ');
         $in-typ = 'List';
         $abbrev-str = check-dups($abbrev-str) if $warn;
-
-        # determine output type
-        if $return-type ne 'Default' {
-            die "Tom, fix this";
-        }
-        else {
-            $out-typ = $in-typ;
-        }
     }
     elsif $word-set ~~ Hash {
         $abbrev-str = $word-set.keys.sort.join(' ');
         $in-typ = 'Hash';
-
-        # determine output type
-        if $return-type ne 'Default' {
-            die "Tom, fix this";
-        }
-        else {
-            $out-typ = $in-typ;
-        }
     }
     else {
         die "FATAL: Cannot handle word set format '{$word-set.^name}'";
     }
 
-    # Return a hash of the input words as keys whose value is
+    # determine output type if not default Hash
+    # List takes precedence
+    my $out-typ = $List ?? 'List'  
+                        !! $Str ?? 'Str' !! 'Hash';
+
+    # A returned Hash has the input words as keys whose value is
     # a space-separated string
     # of their unique shorter abbreviations, if any.
 
@@ -243,11 +220,11 @@ sub abbreviations($word-set where Str|List|Hash,
         my $nc = $w.chars;
         if $nc <= $max-chars {
             # no abbreviation
-            if $word-set ~~ Str {
+            if $out-typ eq 'Str' {
                 $ow ~= ' ' if $ow;
                 $ow ~= $w;
             }
-            elsif $word-set ~~ List {
+            elsif $out-typ eq 'List' {
                 @ow.push: $w;
             }
             next;
@@ -257,16 +234,16 @@ sub abbreviations($word-set where Str|List|Hash,
         my $len = $max-chars;
         while $len <= $nc {
             my $a = $w.substr(0, $len);
-            if $word-set ~~ Str {
+            if $out-typ eq 'Str' {
                 $ow ~= ' ' if $ow;
                 $ow ~= $a;
             }
-            elsif $word-set ~~ List {
+            elsif $out-typ eq 'List' {
                 @ow.push: $a;
             }
             # Hashes need extra attention because the key (the primary
-            # word) is already in the output set
-            elsif $word-set ~~ Hash and $len < $nc {
+            # word) is already in the output set:
+            elsif $out-typ eq 'Hash' and $len < $nc {
                 %ow{$w} ~= ' ' if %ow{$w};
                 %ow{$w} ~= $a;
             }
@@ -274,20 +251,17 @@ sub abbreviations($word-set where Str|List|Hash,
         }
     }
 
-    # the return depends on the input type by default
-    if $in-typ eq $out-typ {
-        if $word-set ~~ Str {
-            return $ow;
-        }
-        elsif $word-set ~~ List {
-            return @ow;
-        }
-        elsif $word-set ~~ Hash {
-            return %ow;
-        }
+    if $out-typ eq 'Hash' {
+        return %ow;
+    }
+    elsif $out-typ eq 'Str' {
+        return $ow;
+    }
+    elsif $out-typ eq 'List' {
+        return @ow;
     }
     else {
-        die "Tom, fix this";
+        die "FATAL: Unexpected \$out-typ '$out-typ'";
     }
 }
 

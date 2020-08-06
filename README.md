@@ -22,7 +22,7 @@ There are two shorter routine name abbreviations one can use that are always exp
  abbrev
 ```
 
-In the sprit of the module, one can `use Abbreviations :ALL;` and have these additional short forms are available:
+In the sprit of the module, one can `use Abbreviations :ALL;` and have these additional short forms available:
 
 ```raku
  abbre
@@ -48,7 +48,12 @@ A **word** satisfies the Raku regex: `$word ~~ /\S+/` which is quite loose. Usin
 
 The input word set can be in one of three forms: (1) a string containing the words separated by spaces, (2) a list, or (3) a hash with the words as keys. Duplicate words will be automatically eliminated, but you can use the ':warn' option if you want to be notified.
 
-One will normally get the result as a `Hash`, but the return type can be specified if desired. Note the results as `Str` or `List` will contain the original words as well as any other valid abbreviated form. The `Hash` returned will have input words as keys whose value will be either empty strings for those keys without a shorter abbreviation or a string of one or more valid but shorter abbreviations for others.
+One will normally get the result as a `Hash`, but the return type can be specified if desired by selecting either option `:Str` or option `:List` (the List takes precedence silently if both are selected): 
+
+    my $abbrevs = abbrevs $words, :Str;
+    my @abbrevs = abbrevs $words, :List;
+
+Note the results as `Str` or `List` will contain the original words as well as any other valid abbreviated form. The `Hash` returned will have input words as keys whose value will be either empty strings for those keys without a shorter abbreviation or a string of one or more valid but shorter abbreviations for others.
 
 For example, given an input set consisting of the words
 
@@ -89,5 +94,10 @@ COPYRIGHT AND LICENSE
 
 Copyright &#x00A9; 2020 Tom Browder
 
-This library is free software; you can redistribute it or modify it under the Artistic License 2.0.
+This library is free software; you may redistribute it or modify it under the Artistic License 2.0.
+
+class Mu $
+----------
+
+Make the return type be either Str or List instead of the default Hash. List takes precednce if both are true.
 
