@@ -1,7 +1,17 @@
 {{$NEXT}}
 
+0.2.0  2020-08-06T14:29:25-05:00
+    - More tests added for full coverage 
+    - Corrected duplicate word handling
+
 0.1.0  2020-08-06T11:18:07-05:00
- API change
+    - API change
+      - sub abbreviations parameter list changed: ($input, :$Str, :$List, :$warn)
+        - Default output type is now Hash
+        - Output type can be selected as Str or List if desired
+        - Str takes precedence over List if both are selected
+      - More tests added
+      - Documentation updated
 
 0.0.1  2020-08-05T04:54:19-05:00
     - Initial version

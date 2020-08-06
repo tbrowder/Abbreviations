@@ -1,4 +1,4 @@
-unit module Abbreviations:ver<0.1.0>:auth<cpan:TBROWDER>;
+unit module Abbreviations:ver<0.2.0>:auth<cpan:TBROWDER>;
 
 =begin pod
 
@@ -60,7 +60,8 @@ satisfy this regex: C<$word ~~ /<ident>/>.
 The input word set can be in one of three forms: (1) a string
 containing the words separated by spaces, (2) a list, or (3) a hash
 with the words as keys. Duplicate words will be automatically
-eliminated, but you can use the ':warn' option if you want to be
+and quietly eliminated (at some slight extra processing cost), 
+but you can use the ':warn' option if you want to be
 notified.
 
 One will normally get the result as a C<Hash>, but the return type can be
@@ -124,7 +125,7 @@ This library is free software; you may redistribute it or modify it under the Ar
 
 =end pod
 
-sub check-dups($words where Str|List --> Str) {
+sub check-dups($words where Str|List, :$warn --> Str) {
     # The input is either a Str or a List.
     # The return is a sorted string for input into auto-abbrev.
     my @w;
@@ -150,7 +151,7 @@ sub check-dups($words where Str|List --> Str) {
         %w{$w} = True;
     }
 
-    if @dups.elems {
+    if @dups.elems and $warn {
         note "WARNING: Found the following duplicate words:";
         note "  $_" for @dups.sort;
     }
@@ -182,12 +183,12 @@ sub abbreviations($word-set where Str|List|Hash,
     if $word-set ~~ Str {
         $abbrev-str = $word-set;
         $in-typ = 'Str';
-        $abbrev-str = check-dups($abbrev-str) if $warn;
+        $abbrev-str = check-dups $abbrev-str, :$warn;
     }
     elsif $word-set ~~ List {
         $abbrev-str = $word-set.sort.join(' ');
         $in-typ = 'List';
-        $abbrev-str = check-dups($abbrev-str) if $warn;
+        $abbrev-str = check-dups $abbrev-str, :$warn;
     }
     elsif $word-set ~~ Hash {
         $abbrev-str = $word-set.keys.sort.join(' ');
@@ -210,6 +211,9 @@ sub abbreviations($word-set where Str|List|Hash,
     # If the number of characters in a word is equal or less,
     # then it has no abbreviation.
     my $max-chars = auto-abbreviate $abbrev-str;
+    if $max-chars ~~ Nil {
+        die "FATAL: Empty input word set.";
+    }
 
     # prepare the desired output
     my %ow;
