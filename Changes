@@ -1,5 +1,9 @@
 {{$NEXT}}
 
+0.3.1  2020-08-07T05:25:15-05:00
+    - Move away an unintended file in the lib directory
+    - Tweak doc format
+
 0.3.0  2020-08-06T21:24:05-05:00
     - Corrected and simplified empty input word set handling
     - Corrected tests

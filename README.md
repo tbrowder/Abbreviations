@@ -48,7 +48,7 @@ A **word** satisfies the Raku regex: `$word ~~ /\S+/` which is quite loose. Usin
 
 The input word set can be in one of three forms: (1) a string containing the words separated by spaces, (2) a list, or (3) a hash with the words as keys. Duplicate words will be automatically and quietly eliminated (at some slight extra processing cost), but you can use the ':warn' option if you want to be notified. An empty input word set will throw an exception.
 
-One will normally get the result as a `Hash`, but the return type can be specified if desired by selecting either option `:Str` or option `:List` (the List takes precedence silently if both are selected):
+One will normally get the result as a `Hash`, but the return type can be specified if desired by selecting either option `:Str` or option `:List` (the `:List` takes precedence silently if both are selected):
 
     my $abbrevs = abbrevs $words, :Str;
     my @abbrevs = abbrevs $words, :List;

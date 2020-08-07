@@ -1,4 +1,4 @@
-unit module Abbreviations:ver<0.3.0>:auth<cpan:TBROWDER>;
+unit module Abbreviations:ver<0.3.1>:auth<cpan:TBROWDER>;
 
 =begin pod
 
@@ -69,7 +69,7 @@ set will throw an exception.
 
 One will normally get the result as a C<Hash>, but the return type can
 be specified if desired by selecting either option C<:Str> or option
-C<:List> (the List takes precedence silently if both are selected):
+C<:List> (the C<:List> takes precedence silently if both are selected):
 
 =begin code
 my $abbrevs = abbrevs $words, :Str;
