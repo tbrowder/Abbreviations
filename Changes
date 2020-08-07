@@ -1,5 +1,8 @@
 {{$NEXT}}
 
+0.3.2  2020-08-07T05:44:26-05:00
+    - Remove pod trailing declaration which mi6 uses
+
 0.3.1  2020-08-07T05:25:15-05:00
     - Move away an unintended file in the lib directory
     - Tweak doc format

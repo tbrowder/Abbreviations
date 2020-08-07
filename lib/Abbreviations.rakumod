@@ -1,4 +1,4 @@
-unit module Abbreviations:ver<0.3.1>:auth<cpan:TBROWDER>;
+unit module Abbreviations:ver<0.3.2>:auth<cpan:TBROWDER>;
 
 =begin pod
 
@@ -175,9 +175,9 @@ our &ab      is export(:ab)    = &abbreviations;
 our &a       is export(:a)     = &abbreviations;
 sub abbreviations($word-set where Str|List|Hash,
                   :$warn = 0,
-                  #= Make the return type be either
-                  #= Str or List instead of the default Hash.
-                  #= List takes precedence if both are true.
+                  # Make the return type be either
+                  # Str or List instead of the default Hash.
+                  # List takes precedence if both are true.
                   :$Str  = 0,
                   :$List = 0,
                  ) is export {

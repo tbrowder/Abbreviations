@@ -96,8 +96,3 @@ Copyright &#x00A9; 2020 Tom Browder
 
 This library is free software; you may redistribute it or modify it under the Artistic License 2.0.
 
-class Mu $
-----------
-
-Make the return type be either Str or List instead of the default Hash. List takes precedence if both are true.
-
