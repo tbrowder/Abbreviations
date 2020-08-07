@@ -61,12 +61,15 @@ my $bad-words2-out = 'a ab abc abcd abcde';
 is abbreviations($bad-words2, :Str), $bad-words2-out, "dup words without :warn";
 is abbreviations($bad-words2, :Str, :warn), $bad-words2-out, "dup words with :warn";
 
-# no word
+# no word causes an exception
 my $bad-words3a = '';
-my $bad-words3b = '';
-my $bad-words3-out = '';
-is abbreviations($bad-words3a, :Str), $bad-words3-out, "no words in ('')";
-is abbreviations($bad-words3b, :Str), $bad-words3-out, "no words in (' ')";
+my $bad-words3b = ' ';
+dies-ok {
+    my $res = abbreviations($bad-words3a, :Str);
+}, "FATAL: no words in ('')";
+dies-ok {
+    my $res = abbreviations($bad-words3b, :Str);
+}, "FATAL: no words in (' ')";
 
 # apostrophes, commas, periods, etc.
 my $bad-words4 = q{a,  a ' ; - * ! ? ab abcde};
