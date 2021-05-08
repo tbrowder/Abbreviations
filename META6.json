@@ -1,26 +1,29 @@
 {
-  "auth" : "cpan:TBROWDER",
-  "authors" : [
+  "auth": "cpan:TBROWDER",
+  "authors": [
     "Tom Browder"
   ],
-  "build-depends" : [ ],
-  "depends" : [ ],
-  "description" : "provides abbreviations for an input set of one or more words",
-  "license" : "Artistic-2.0",
-  "name" : "Abbreviations",
-  "perl" : "6.d",
-  "provides" : {
-    "Abbreviations" : "lib/Abbreviations.rakumod"
+  "build-depends": [
+  ],
+  "depends": [
+  ],
+  "description": "provides abbreviations for an input set of one or more words",
+  "license": "Artistic-2.0",
+  "name": "Abbreviations",
+  "perl": "6.d",
+  "provides": {
+    "Abbreviations": "lib/Abbreviations.rakumod"
   },
-  "resources" : [ ],
-  "source-url" : "https://github.com/tbrowder/Abbreviations.git",
-  "tags" : [
+  "resources": [
+  ],
+  "source-url": "https://github.com/tbrowder/Abbreviations.git",
+  "tags": [
     "text",
     "abbreviations",
     "options"
   ],
-  "test-depends" : [
+  "test-depends": [
     "Test::META"
   ],
-  "version" : "0.3.2"
+  "version": "0.3.2"
 }

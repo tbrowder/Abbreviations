@@ -69,7 +69,7 @@ the list of abbreviations (which incudes the original words) is
         abcd   # <== abbreviation for abcde
         abcde
 
-The default hash returned which will show the abbreviations attached as a string to the parent word. That result for the previous input example is
+The default hash returned will show the abbreviations attached as a string to the parent word. That result for the previous input example is
 
     a     => '',
     ab    => '',
@@ -78,7 +78,7 @@ The default hash returned which will show the abbreviations attached as a string
 AUTHOR
 ======
 
-Tom Browder <tom.browder@gmail.com>
+Tom Browder <tbrowder@cpan.org>
 
 CREDITS
 =======
@@ -89,10 +89,10 @@ CREDITS
 
   * The Raku community for help with subroutine signatures.
 
-COPYRIGHT AND LICENSE
+COPYRIGHT and LICENSE
 =====================
 
 Copyright &#x00A9; 2020 Tom Browder
 
-This library is free software; you may redistribute it or modify it under the Artistic License 2.0.
+This library is free software; you may redistribute or modify it under the Artistic License 2.0.
 

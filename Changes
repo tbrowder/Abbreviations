@@ -1,4 +1,6 @@
 {{$NEXT}}
+    - Corrected several grammatical errors
+    - Removed the travis file
 
 0.3.2  2020-08-07T05:44:26-05:00
     - Remove pod trailing declaration which mi6 uses
