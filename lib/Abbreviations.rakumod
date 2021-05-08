@@ -1,4 +1,4 @@
-unit module Abbreviations:ver<0.3.2>:auth<cpan:TBROWDER>;
+unit module Abbreviations:ver<0.3.3>:auth<cpan:TBROWDER>;
 
 =begin pod
 
