@@ -1,0 +1,15 @@
+Algorithm to get the set of minimum-length keys for an input word list:
+
+  %ow - make a hash to hold the original words with a list of valid
+        abbreviations
+
+  %w - make a working hash of first characters (key length = 1)
+       with values a list of those words with that leading character.
+
+  For each key in the working hash, %w, add the keys with single 
+  value elements to the master hash, %m, and remove the key from
+  the working hash, %w.
+
+  While the working hash has more than one element, break the hash 
+  into N+1-character keys and repeat.
+
