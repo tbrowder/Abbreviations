@@ -1,4 +1,20 @@
 {{$NEXT}}
+    - API 2 with significant differences in output formats
+    - Added an enum type and named option to identify the desired output type, removed the
+      old multiple named option selectors
+    - Add the ':lower-case' option to use lower-case for the entire 
+      input word set (which is permanently modified)
+    - Added a new exportable routine 'sort-list' to sort a list first 
+      by the default order and then by word length (shortest first, but selectable)
+    - Ensure the order of input lists of words to abbreviate is retained 
+      in all the appropriate output formats 
+    - Corrected the algorithms to handle subgroups to
+      enable larger abbreviation sets
+    - Removed the pod for the README to its own file in ./docs
+    - Added a new test for the utility subs
+    - Corrected tests for the new features and API
+    - All output lists and strings are sorted by length (shortest first)
+    - Changed hash output key values from strings to sorted lists, shortest first
 
 0.3.3  2021-05-08T09:33:07-05:00
     - Corrected several grammatical errors
