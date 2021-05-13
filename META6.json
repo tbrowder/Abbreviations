@@ -1,4 +1,5 @@
 {
+  "api": 2,
   "auth": "cpan:TBROWDER",
   "authors": [
     "Tom Browder"
