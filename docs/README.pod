@@ -73,22 +73,22 @@ For example,
 my %abbrevs = abbrevs @words, :output-type(AH);
 =end code
 
-=head3 Output types
+=head3 Output types by enum
 
-=item Hash 
+=item C<H> (Hash)
 
-The default B<Hash> (C<H>) returned will
+The default I<Hash> (C<H>) returned will
 have input words as keys whose value will be a sorted list of one or more
 valid abbreviations (sorted by length, shortest first).
 
-=item AbbrevHash 
+=item C<AH> (AbbrevHash) 
 
-An B<AbbrevHash> (C<AH>) is keyed by all of the valid abbreviations for the input 
+An I<AbbrevHash> (C<AH>) is keyed by all of the valid abbreviations for the input 
 word list and whose values are the word from which that abbreviation is defined.
 
-=item AbbrevList
+=item C<AL> (AbbrevList)
 
-An B<AbbrevList> (C<AL>) is special in that the returned list is the one, shortest
+An I<AbbrevList> (C<AL>) is special in that the returned list is the one, shortest
 abbreviation for each of the input words in input order. For example,
 
 =begin code
@@ -97,15 +97,15 @@ my @abb = abbrevs @w, :lower-case, :output-type(AL);
 say @abb; # OUTPUT: m tu w th f sa su
 =end code
 
-=item List 
+=item C<L> (List) 
 
-A B<List> (C<L>) contains all of the valid abbreviations for the input 
+A I<List> (C<L>) contains all of the valid abbreviations for the input 
 word list, including the words themselves, sorted first be the default Raku sort
 and then by length (shortest first).
 
-=item String
+=item C<S> (String)
 
-A B<String> (C<S>) is the string formed by joining the B<List> by a single space.
+A I<String> (C<S>) is the string formed by joining the B<List> by a single space.
 
 One other point about the new abbreviation process: the input word set is
 first formed into subgroups based on the the first
@@ -140,10 +140,11 @@ The result is
 
 Notice the input word B<ab> now has only one abbreviation and B<abcde> has only three.
 
-One other routine may be exported: 
+=head2 Exported symbols
+
+=head3 C<sort-list>
 
 =begin code
-
 sub sort-list(@list, :longest-first --> List) is export(:sort) 
 {...}
 =end code
