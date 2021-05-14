@@ -5,7 +5,7 @@ NAME
 
 Abbreviations - Provides abbreviations for an input set of one or more words
 
-**NOTE: THIS VERSION IS API 2 AND HAS VERY DIFFERNT FEATURES COMPARED TO THE ORIGINAL API.**
+**NOTE: THIS VERSION IS API 2 AND HAS VERY DIFFERENT FEATURES COMPARED TO THE ORIGINAL API.**
 
 SYNOPSIS
 ========
@@ -56,31 +56,31 @@ One will normally get the result as a hash, but the return type can be specified
 
     my %abbrevs = abbrevs @words, :output-type(AH);
 
-### Output types
+### Output types by enum
 
-  * Hash 
+  * `H` (Hash)
 
-The default **Hash** (`H`) returned will have input words as keys whose value will be a sorted list of one or more valid abbreviations (sorted by length, shortest first).
+The default *Hash* (`H`) returned will have input words as keys whose value will be a sorted list of one or more valid abbreviations (sorted by length, shortest first).
 
-  * AbbrevHash 
+  * `AH` (AbbrevHash) 
 
-An **AbbrevHash** (`AH`) is keyed by all of the valid abbreviations for the input word list and whose values are the word from which that abbreviation is defined.
+An *AbbrevHash* (`AH`) is keyed by all of the valid abbreviations for the input word list and whose values are the word from which that abbreviation is defined.
 
-  * AbbrevList
+  * `AL` (AbbrevList)
 
-An **AbbrevList** (`AL`) is special in that the returned list is the one, shortest abbreviation for each of the input words in input order. For example,
+An *AbbrevList* (`AL`) is special in that the returned list is the one, shortest abbreviation for each of the input words in input order. For example,
 
     my @w = <Monday Tuesday Wednesday Thursday Friday Saturday Sunday>;
     my @abb = abbrevs @w, :lower-case, :output-type(AL);
     say @abb; # OUTPUT: m tu w th f sa su
 
-  * List 
+  * `L` (List) 
 
-A **List** (`L`) contains all of the valid abbreviations for the input word list, including the words themselves, sorted first be the default Raku sort and then by length (shortest first).
+A *List* (`L`) contains all of the valid abbreviations for the input word list, including the words themselves, sorted first be the default Raku sort and then by length (shortest first).
 
-  * String
+  * `S` (String)
 
-A **String** (`S`) is the string formed by joining the **List** by a single space.
+A *String* (`S`) is the string formed by joining the **List** by a single space.
 
 One other point about the new abbreviation process: the input word set is first formed into subgroups based on the the first character of each word. Then the subgroups have their abbreviation sets formed, then all those sets are combined into one set. The result will be a larger number of available abbeviations in many cases than were available under the original API.
 
@@ -103,7 +103,10 @@ The result is
 
 Notice the input word **ab** now has only one abbreviation and **abcde** has only three.
 
-One other routine may be exported: 
+Exported symbols
+----------------
+
+### `sort-list`
 
     sub sort-list(@list, :longest-first --> List) is export(:sort) 
     {...}
