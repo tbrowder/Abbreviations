@@ -52,23 +52,35 @@ The input word set can be in one of two forms: (1) a list (recommended) or (2) a
 
 Note the input word set will not be modified unless the `:lower-case` option is used. In that case, all characters will be transformed to lower-case.
 
-One will normally get the result as a hash, but the return type can be specified via an `enum` if desired by selecting one of the `:$output-type` options: `AH` (AbbrevHash), `AL` (AbbrevList), `H` (Hash), `L` (List), or `S` (Str). For example,
+One will normally get the result as a hash, but the return type can be specified via an `enum` if desired by selecting one of the `:output-type` options: `AH` (AbbrevHash), `AL` (AbbrevList), `H` (Hash), `L` (List), or `S` (Str). For example,
 
     my %abbrevs = abbrevs @words, :output-type(AH);
 
+### Output types
+
+  * Hash 
+
 The default **Hash** (`H`) returned will have input words as keys whose value will be a sorted list of one or more valid abbreviations (sorted by length, shortest first).
+
+  * AbbrevHash 
 
 An **AbbrevHash** (`AH`) is keyed by all of the valid abbreviations for the input word list and whose values are the word from which that abbreviation is defined.
 
-An **AbbrevList** (`AL`) is special in that the returned list is one, shortest abbreviation for each of the input words in input order. For example,
+  * AbbrevList
+
+An **AbbrevList** (`AL`) is special in that the returned list is the one, shortest abbreviation for each of the input words in input order. For example,
 
     my @w = <Monday Tuesday Wednesday Thursday Friday Saturday Sunday>;
     my @abb = abbrevs @w, :lower-case, :output-type(AL);
     say @abb; # OUTPUT: m tu w th f sa su
 
+  * List 
+
 A **List** (`L`) contains all of the valid abbreviations for the input word list, including the words themselves, sorted first be the default Raku sort and then by length (shortest first).
 
-A **Str** (`S`) is the string formed by joining the **List** by a single space.
+  * String
+
+A **String** (`S`) is the string formed by joining the **List** by a single space.
 
 One other point about the new abbreviation process: the input word set is first formed into subgroups based on the the first character of each word. Then the subgroups have their abbreviation sets formed, then all those sets are combined into one set. The result will be a larger number of available abbeviations in many cases than were available under the original API.
 
