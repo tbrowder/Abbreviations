@@ -44,9 +44,9 @@ my %abb = abb $words;
 DESCRIPTION
 ===========
 
-**Abbreviations** is a module with one automatically exported multi-subroutine, `abbreviations`, which takes as input a set of words and returns the original set with added unique abbreviations for the set. (Note the input words are also abbreviations in the context of this module.)
+**Abbreviations** is a module with one automatically exported subroutine, `abbreviations`, which takes as input a set of words and returns the original set with added unique abbreviations for the set. (Note the input words are also abbreviations in the context of this module.)
 
-A **word** satisfies the Raku regex: `$word ~~ /\S+/` which is quite loose. Using programs can of course further restrict that if need be. For example, for use with module **Opt::Handler** words must satisfy this regex: `$word ~~ /<ident>/`.
+A *word* satisfies the Raku regex: `$word ~~ /\S+/` which is quite loose. Using programs can of course further restrict that if need be. For example, for use with module **Opt::Handler** words must satisfy this regex: `$word ~~ /<ident>/`.
 
 The input word set can be in one of two forms: (1) a list (recommended) or (2) a string containing the words separated by spaces. Duplicate words will be automatically and quietly eliminated.
 
