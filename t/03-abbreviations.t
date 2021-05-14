@@ -2,6 +2,9 @@ use Test;
 
 use Abbreviations :ALL;
 
+##### subroutines #####
+sub sort-len {$^a.chars cmp $^b.chars}
+
 # good input test data
 my @in = <A ab Abcde>;
 my $in = @in.join(' ');
@@ -23,9 +26,11 @@ my %outL-AH = [
     abcde => 'abcde',
 ];
 my @outL-AL = <a ab abc>;
-my @outL    = @outL-AL.append(<abcd abcde>);
+my @outL    = @outL-AL;
+   @outL   .= append(<abcd abcde>);
+   @outL   .= sort;
+   @outL   .= sort(&sort-len);
 my $outL    = @outL.join(' ');
-
 
 # default case-sensitive
 my %out = [
@@ -36,7 +41,7 @@ my %out = [
 ];
 my %out-AH = [
     # keyed by the valid abbreviations for the input words
-    A => 'A',
+    A     => 'A',
     Ab    => 'Abcde',
     Abc   => 'Abcde',
     Abcd  => 'Abcde',
@@ -44,11 +49,14 @@ my %out-AH = [
     a     => 'ab',
     ab    => 'ab',
 ];
-my @out-AL = <A ab Ab>;
-my @out    = @out-AL.append(<Abcd Abcde>);
+my @out-AL = <A a Ab>;
+my @out    = @out-AL;
+   @out   .= append(<Abc Abcd Abcde ab>);
+   @out   .= sort;
+   @out   .= sort(&sort-len);
 my $out    = @out.join(' ');
 
-plan 27;
+plan 32;
 
 # basic in/out
 # 24 tests
@@ -59,6 +67,7 @@ is-deeply abbreviations($in, :out-type(AH)), %out-AH, "string in, AbbrevHash out
 is-deeply abbreviations($in, :out-type(AL)), @out-AL, "string in, AbbrevList out";
 is-deeply abbreviations($in, :out-type(L)), @out, "string in, List out";
 is        abbreviations($in, :out-type(S)), $out, "string in, Str out";
+
 
 is-deeply abbreviations(@in), %out, "list in, hash out";
 is-deeply abbreviations(@in, :out-type(AH)), %out-AH, "list in, AbbrevHash out";
@@ -79,7 +88,6 @@ is-deeply abbreviations(@in, :lower-case, :out-type(AL)), @outL-AL, "list in, Ab
 is-deeply abbreviations(@in, :lower-case, :out-type(L)), @outL, "list in, List out, lower-case";
 is        abbreviations(@in, :lower-case, :out-type(S)), $outL, "list in, Str out, lower-case";
 
-
 # checking aliases
 # 7 tests
 
@@ -91,35 +99,31 @@ is-deeply abb(@in), %out, "alias abb";
 is-deeply ab(@in), %out, "alias ab";
 is-deeply a(@in), %out, "alias a";
 
-=begin comment
 # faulty and punctuation test data
 # 5 tests
 
 # leading or trailing space
 my $bad-words1     = ' a ab abcde ';
-my $bad-words1-out = 'a ab abcd abcde';
-is abbreviations($bad-words1, :Str), $bad-words1-out, "string in with leading and trailing spaces";
+my $bad-words1-out = 'a ab abc abcd abcde';
+is abbreviations($bad-words1, :out-type(S)), $bad-words1-out, "string in with leading and trailing spaces";
 
 # dup word
 my $bad-words2 = 'a a ab abcde';
-my $bad-words2-out = 'a ab abcd abcde';
-is abbreviations($bad-words2, :Str), $bad-words2-out, "eliminate dup words";
+my $bad-words2-out = 'a ab abc abcd abcde';
+is abbreviations($bad-words2, :out-type(S)), $bad-words2-out, "eliminate dup words";
 
 # no word causes an exception
 my $bad-words3a = '';
 my $bad-words3b = ' ';
 dies-ok {
-    my $res = abbreviations($bad-words3a, :Str);
+    my $res = abbreviations($bad-words3a, :out-type(S));
 }, "FATAL: no words in ('')";
 dies-ok {
-    my $res = abbreviations($bad-words3b, :Str);
+    my $res = abbreviations($bad-words3b, :out-type(S));
 }, "FATAL: no words in (' ')";
 
 # apostrophes, commas, periods, etc.
 my @bad-words4 = <a,  a ' ; - * ! ? ab abcde>;
-my $bad-words4-out = q{! ' * - ; ? a a, ab abcd abcde};
-is abbreviations($bad-words4, :Str), $bad-words4-out, "words and punctuation";
-=end comment
+my $bad-words4-out = q{! ' * - ; ? a a, ab abc abcd abcde};
+is abbreviations(@bad-words4, :out-type(S)), $bad-words4-out, "words and punctuation";
 
-##### subroutines #####
-sub sort-len {$^a.chars cmp $^b.chars}

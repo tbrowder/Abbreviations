@@ -5,6 +5,8 @@ NAME
 
 Abbreviations - Provides abbreviations for an input set of one or more words
 
+**NOTE: THIS VERSION IS API 2 AND HAS VERY DIFFERNT FEATURES COMPARED TO THE ORIGINAL API.**
+
 SYNOPSIS
 ========
 
@@ -13,7 +15,6 @@ use Abbreviations;
 my $words = 'A ab Abcde';
 # The main exported routine:
 my %abbrevs = abbreviations $words;
-# OUTPUT:
 ```
 
 There are two shorter routine name abbreviations one can use that are always exported:
@@ -43,56 +44,56 @@ my %abb = abb $words;
 DESCRIPTION
 ===========
 
-**Abbreviations** is a module with one automaticall exported multi-subroutine, `abbreviations`, which takes as input a set of words and returns the original set with added unique abbreviations for the set. (Note the input words are also abbreviations in the context of this module.)
+**Abbreviations** is a module with one automatically exported multi-subroutine, `abbreviations`, which takes as input a set of words and returns the original set with added unique abbreviations for the set. (Note the input words are also abbreviations in the context of this module.)
 
 A **word** satisfies the Raku regex: `$word ~~ /\S+/` which is quite loose. Using programs can of course further restrict that if need be. For example, for use with module **Opt::Handler** words must satisfy this regex: `$word ~~ /<ident>/`.
 
-The input word set can be in one of three forms: (1) a list (recommended), (2) a string containing the words separated by spaces, or (3) a hash with the words as keys. Duplicate words will be automatically and quietly eliminated (at some slight extra processing cost), but you can use the ':warn' option if you want to be notified. An empty input word set will throw an exception.
+The input word set can be in one of two forms: (1) a list (recommended) or (2) a string containing the words separated by spaces. Duplicate words will be automatically and quietly eliminated.
 
-Note the input word set not modify any characters unless the `:same-case` option is used.
+Note the input word set will not be modified unless the `:lower-case` option is used. In that case, all characters will be transformed to lower-case.
 
-One will normally get the result as a `Hash`, but the return type can be specified if desired by selecting either option `:Str` or option `:List` (the `:List` takes precedence silently if both are selected):
+One will normally get the result as a `Hash`, but the return type can be specified if desired by selecting one of options `AbbrevHash`, or `AbbrevList`. If more than one are selected, the choice is made silently in the order `AbbrevHash`, `AbbrevList`;
 
-    my $abbrevs = abbrevs $words, :Str;
-    my @abbrevs = abbrevs $words, :List;
+    my $abbrevs = abbrevs @words, :AbbrevHash;
+    my @abbrevs = abbrevs $words, :AbbrevList;
 
-Note the results as `Str` or `List` will contain the original words as well as any other valid abbreviated form, and the words will be sorted in either case. The `Hash` returned will have input words as keys whose value will be either empty strings for those keys without a shorter abbreviation or a sortedcstring of one or more valid but shorter abbreviations for others.
+The default `Hash` returned will have input words as keys whose value will be a sorted list of one or more valid abbreviations (sorted by length, shortest first).
 
-One other point about the process: the input word set is first formed into subgroups based on the Unicode group of the first character of each word as shown in Table 1. Then the subgroups have their abbreviation sets formed, then all those sets are combined into one set. The result will be a larger number of available abbeviations in many cases.
+An `AbbrevHash` is keyed by all of the valid abbreviations for the input word list and whose values are the word from which that abbreviation is defined.
 
-### Table 1. Leading character subgroups
+An `AbbrevList` is special in that the returned list is one, shortest abbreviation for each of the input words in input order. For example:
 
-<table class="pod-table">
-<thead><tr>
-<th>Group</th> <th>Unicode regex class</th>
-</tr></thead>
-<tbody>
-<tr> <td>Lower-case letter</td> <td>&lt;:LI&gt;</td> </tr> <tr> <td>Upper-case letter</td> <td>&lt;:Lu&gt;</td> </tr> <tr> <td>Number</td> <td>&lt;:N&gt;</td> </tr> <tr> <td>Symbol</td> <td>&lt;:S&gt;</td> </tr> <tr> <td>Punctuation</td> <td>&lt;:P&gt;</td> </tr> <tr> <td>Other</td> <td>none of the above</td> </tr>
-</tbody>
-</table>
+    my @w = <Monday Tuesday Wednesday Thursday Friday Saturday Sunday>;
+    my @abb = abbrevs @w, :$lower-case, :AbbrevList;
+    say @abb; # OUTPUT: m tu w th f sa su
 
-For example, given an input set consisting of the words
+One other point about the process: the input word set is first formed into subgroups based on the the first character of each word as shown in Table 1. Then the subgroups have their abbreviation sets formed, then all those sets are combined into one set. The result will be a larger number of available abbeviations in many cases.
 
-    A
-    ab
-    Abcde
+For example, given an input set consisting of the words `A ab Abcde`, the default output hash of abbreviations (with the original words as keys) is
 
-the default hash of abbreviations (with the original words as keys) is
-
-        A     => '',
+        A     => ,
         ab    => 'a',
-        Abcde => 'Abcd Abc Ab',
+        Abcde => 'Ab', 'Abc', 'Abcd',
 
-If the `:same-case` option is used we get a surprisingly different result.
+If the `:lower-case` option is used we get a surprisingly different result.
 
     my $words = 'A ab Abcde':
-    my %abbr = abbrevs $words, :same-case;
+    my %abbr = abbrevs $words, :lower-case;
 
 The result is
 
-        a     => '',
-        ab    => '',
-        abcde => 'abcd abc'
+        a     => ,
+        ab    => ,
+        abcde => 'abc', 'abcd',
+
+Notice the input word `ab` now has no abbreviation.
+
+One other routine may be exported: 
+
+    sub sort-list(@list, :$longest-first --> List) is export(:sort) 
+    {...}
+
+The routine sorts the input list first by the default sort and then by word length. The order by length is by shortest first unless the `:longest-first` option is used.
 
 AUTHOR
 ======
