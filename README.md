@@ -52,28 +52,31 @@ The input word set can be in one of two forms: (1) a list (recommended) or (2) a
 
 Note the input word set will not be modified unless the `:lower-case` option is used. In that case, all characters will be transformed to lower-case.
 
-One will normally get the result as a `Hash`, but the return type can be specified if desired by selecting one of options `AbbrevHash`, or `AbbrevList`. If more than one are selected, the choice is made silently in the order `AbbrevHash`, `AbbrevList`;
+One will normally get the result as a hash, but the return type can be specified via an `enum` if desired by selecting one of the `:$output-type` options: `AH` (AbbrevHash), `AL` (AbbrevList), `H` (Hash), `L` (List), or `S` (Str). For example,
 
-    my $abbrevs = abbrevs @words, :AbbrevHash;
-    my @abbrevs = abbrevs $words, :AbbrevList;
+    my %abbrevs = abbrevs @words, :output-type(AH);
 
-The default `Hash` returned will have input words as keys whose value will be a sorted list of one or more valid abbreviations (sorted by length, shortest first).
+The default **Hash** (`H`) returned will have input words as keys whose value will be a sorted list of one or more valid abbreviations (sorted by length, shortest first).
 
-An `AbbrevHash` is keyed by all of the valid abbreviations for the input word list and whose values are the word from which that abbreviation is defined.
+An **AbbrevHash** (`AH`) is keyed by all of the valid abbreviations for the input word list and whose values are the word from which that abbreviation is defined.
 
-An `AbbrevList` is special in that the returned list is one, shortest abbreviation for each of the input words in input order. For example:
+An **AbbrevList** (`AL`) is special in that the returned list is one, shortest abbreviation for each of the input words in input order. For example,
 
     my @w = <Monday Tuesday Wednesday Thursday Friday Saturday Sunday>;
-    my @abb = abbrevs @w, :$lower-case, :AbbrevList;
+    my @abb = abbrevs @w, :lower-case, :output-type(AL);
     say @abb; # OUTPUT: m tu w th f sa su
 
-One other point about the process: the input word set is first formed into subgroups based on the the first character of each word as shown in Table 1. Then the subgroups have their abbreviation sets formed, then all those sets are combined into one set. The result will be a larger number of available abbeviations in many cases.
+A **List** (`L`) contains all of the valid abbreviations for the input word list, including the words themselves, sorted first be the default Raku sort and then by length (shortest first).
+
+A **Str** (`S`) is the string formed by joining the **List** by a single space.
+
+One other point about the new abbreviation process: the input word set is first formed into subgroups based on the the first character of each word. Then the subgroups have their abbreviation sets formed, then all those sets are combined into one set. The result will be a larger number of available abbeviations in many cases than were available under the original API.
 
 For example, given an input set consisting of the words `A ab Abcde`, the default output hash of abbreviations (with the original words as keys) is
 
-        A     => ,
-        ab    => 'a',
-        Abcde => 'Ab', 'Abc', 'Abcd',
+        A     => ['A'],
+        ab    => ['a', 'ab'],
+        Abcde => ['Ab', 'Abc', 'Abcd', 'Abcde'],
 
 If the `:lower-case` option is used we get a surprisingly different result.
 
@@ -82,18 +85,18 @@ If the `:lower-case` option is used we get a surprisingly different result.
 
 The result is
 
-        a     => ,
-        ab    => ,
-        abcde => 'abc', 'abcd',
+        a     => ['a'],
+        ab    => ['ab],
+        abcde => ['abc', 'abcd', 'abcde'],
 
-Notice the input word `ab` now has no abbreviation.
+Notice the input word **ab** now has only one abbreviation and **abcde** has only three.
 
 One other routine may be exported: 
 
-    sub sort-list(@list, :$longest-first --> List) is export(:sort) 
+    sub sort-list(@list, :longest-first --> List) is export(:sort) 
     {...}
 
-The routine sorts the input list first by the default sort and then by word length. The order by length is by shortest first unless the `:longest-first` option is used.
+The routine sorts the input list first by the default Raku sort and then by word length. The order by length is by shortest first unless the `:longest-first` option is used.
 
 AUTHOR
 ======
