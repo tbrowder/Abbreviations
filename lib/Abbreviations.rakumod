@@ -49,7 +49,7 @@ sub abbreviations($word-set,
         @input-order-lower-case = @abbrev-words;
     }
 
-    # A defaultbreturned Hash has the input words as keys whose values are 
+    # A default returned Hash has the input words as keys whose values are 
     # a sorted list of strings of their unique shorter abbreviations, if
     # any. Note all sorts use sub 'sort-list'.
 
@@ -79,7 +79,7 @@ sub abbreviations($word-set,
     # At this point we have:
     #   + thrown an exception for an empty input word set.
     #   + down-cased the input words if option :lower-case was used
-    #   + removed dups from the input word set.
+    #   + removed dups from the input word set
     #   + divided the input string into leading character case type
 
     note "DEBUG: ready to assemble groups" if $debug;
@@ -98,7 +98,7 @@ sub abbreviations($word-set,
     # the hash output is %ow and ready to go
     return %ow if $out-type ~~ H; # 'Hash';
 
-    # use the default has to assemble other output formats
+    # use the default hash to assemble other output formats
     my @ow;
     for %ow.kv -> $k, $v {
         @ow.push: $k;
@@ -173,14 +173,14 @@ sub get-abbrevs($group, :%ow, :%group, :$debug) {
         # Handle the abbreviations
         my $len = $min-chars;
         while $len <= $nc {
-            # this should include the word as the last abbreviation
+            # using $nc as the max length will include the word as the last abbreviation
             my $a = $w.substr(0, $len);
             @a.push: $a;
             ++$len;
         }
         
-        # sort the list two ways
         @a .= unique;
+        # sort the list two ways
         @a = sort-list @a;
 
         # add the list to the key
@@ -198,6 +198,7 @@ sub auto-abbreviate(@words) is export(:auto) {
     # the user is warned to avoid that or catch the error exception.
     #
     # Source: http://rosettacode.org/wiki/Abbreviations,_automatic#Raku
+    # Author: @thundergnat
 
     return Nil unless @words; # The caller should of taken care of that.
 
@@ -213,6 +214,7 @@ sub sort-list(@list is copy, :$longest-first) is export(:auto, :sort) {
     # always sort by standard sort first
     @list .= sort;
     return @list.sort({$^b.chars cmp $^a.chars}) if $longest-first;
+    # sort by shortest word first
     @list.sort({$^a.chars cmp $^b.chars});
 }
 
