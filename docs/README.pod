@@ -66,7 +66,7 @@ option is used. In that case, all characters will be transformed to lower-case.
 One will normally get the result as a hash, but the return type can
 be specified via an C<enum> if desired by selecting one of the
 C<:output-type> options: 
-C<AH> (AbbrevHash), C<AL> (AbbrevList), C<H> (Hash), C<L> (List), or C<S> (Str). 
+C<AH> (AbbrevHash), C<AL> (AbbrevList), C<H> (Hash), C<L> (List), or C<S> (String). 
 For example,
 
 =begin code
@@ -161,13 +161,13 @@ Tom Browder <tbrowder@cpan.org>
 
 =item Leon Timmermans (aka @Leont) for inspiration from his Raku module C<Getopt::Long>.
 
-=item @Thundergnat, the original author of the Raku C<auto-abbreviate> algorithm on L<Rosetta Code|http://rosettacode.org/wiki/Abbreviations,_automatic#Raku>.
+=item @thundergnat, the original author of the Raku C<auto-abbreviate> algorithm on L<Rosetta Code|http://rosettacode.org/wiki/Abbreviations,_automatic#Raku>.
 
 =item The Raku community for help with subroutine signatures.
 
 =head1 COPYRIGHT and LICENSE
 
-Copyright &#x00A9; 2020 Tom Browder
+Copyright &#x00A9; 2020-2021 Tom Browder
 
 This library is free software; you may redistribute or modify it under the Artistic License 2.0.
 

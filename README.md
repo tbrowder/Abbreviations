@@ -52,7 +52,7 @@ The input word set can be in one of two forms: (1) a list (recommended) or (2) a
 
 Note the input word set will not be modified unless the `:lower-case` option is used. In that case, all characters will be transformed to lower-case.
 
-One will normally get the result as a hash, but the return type can be specified via an `enum` if desired by selecting one of the `:output-type` options: `AH` (AbbrevHash), `AL` (AbbrevList), `H` (Hash), `L` (List), or `S` (Str). For example,
+One will normally get the result as a hash, but the return type can be specified via an `enum` if desired by selecting one of the `:output-type` options: `AH` (AbbrevHash), `AL` (AbbrevList), `H` (Hash), `L` (List), or `S` (String). For example,
 
     my %abbrevs = abbrevs @words, :output-type(AH);
 
@@ -123,14 +123,14 @@ CREDITS
 
   * Leon Timmermans (aka @Leont) for inspiration from his Raku module `Getopt::Long`.
 
-  * @Thundergnat, the original author of the Raku `auto-abbreviate` algorithm on [Rosetta Code](http://rosettacode.org/wiki/Abbreviations,_automatic#Raku).
+  * @thundergnat, the original author of the Raku `auto-abbreviate` algorithm on [Rosetta Code](http://rosettacode.org/wiki/Abbreviations,_automatic#Raku).
 
   * The Raku community for help with subroutine signatures.
 
 COPYRIGHT and LICENSE
 =====================
 
-Copyright &#x00A9; 2020 Tom Browder
+Copyright &#x00A9; 2020-2021 Tom Browder
 
 This library is free software; you may redistribute or modify it under the Artistic License 2.0.
 
