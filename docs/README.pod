@@ -100,7 +100,7 @@ say @abb; # OUTPUT: m tu w th f sa su
 =item C<L> (List) 
 
 A I<List> (C<L>) contains all of the valid abbreviations for the input 
-word list, including the words themselves, sorted first be the default Raku sort
+word list, including the words themselves, sorted first by the default Raku sort
 and then by length (shortest first).
 
 =item C<S> (String)

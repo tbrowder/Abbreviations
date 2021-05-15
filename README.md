@@ -76,7 +76,7 @@ An *AbbrevList* (`AL`) is special in that the returned list is the one, shortest
 
   * `L` (List) 
 
-A *List* (`L`) contains all of the valid abbreviations for the input word list, including the words themselves, sorted first be the default Raku sort and then by length (shortest first).
+A *List* (`L`) contains all of the valid abbreviations for the input word list, including the words themselves, sorted first by the default Raku sort and then by length (shortest first).
 
   * `S` (String)
 
