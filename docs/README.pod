@@ -72,7 +72,7 @@ For example,
 my %abbrevs = abbrevs @words, :output-type(AH);
 =end code
 
-=head3 Output types by enum
+=head3 Output types by C<enum Output-type>
 
 =item C<H> (Hash)
 
