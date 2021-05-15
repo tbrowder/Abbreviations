@@ -5,7 +5,7 @@ NAME
 
 Abbreviations - Provides abbreviations for an input set of one or more words
 
-**NOTE: THIS VERSION IS API 2 AND HAS VERY DIFFERENT FEATURES COMPARED TO THE ORIGINAL API.**
+Note: This version uses API 2 and is not compatible with previous versions.
 
 SYNOPSIS
 ========
@@ -82,6 +82,8 @@ A *List* (`L`) contains all of the valid abbreviations for the input word list, 
 
 A *String* (`S`) is the string formed by joining the **List** by a single space.
 
+### Improved abbreviation search
+
 One other point about the new abbreviation process: the input word set is first formed into subgroups based on the the first character of each word. Then the subgroups have their abbreviation sets formed, then all those sets are combined into one set. The result will be a larger number of available abbeviations in many cases than were available under the original API.
 
 For example, given an input set consisting of the words `A ab Abcde`, the default output hash of abbreviations (with the original words as keys) is
@@ -103,15 +105,19 @@ The result is
 
 Notice the input word **ab** now has only one abbreviation and **abcde** has only three.
 
-Exported symbols
-----------------
+Other exported symbols
+----------------------
 
-### `sort-list`
+### `sub sort-list`
 
     sub sort-list(@list, :longest-first --> List) is export(:sort) 
     {...}
 
 The routine sorts the input list first by the default Raku sort and then by word length. The order by length is by shortest first unless the `:longest-first` option is used.
+
+### `enum Other-type`
+
+### `sub abbr`
 
 AUTHOR
 ======
