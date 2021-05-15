@@ -105,7 +105,7 @@ and then by length (shortest first).
 
 =item C<S> (String)
 
-A I<String> (C<S>) is the string formed by joining the B<List> by a single space.
+A I<String> (C<S>) is the string formed by joining the I<List> by a single space.
 
 =head3 Improved abbreviation search
 

@@ -80,7 +80,7 @@ A *List* (`L`) contains all of the valid abbreviations for the input word list, 
 
   * `S` (String)
 
-A *String* (`S`) is the string formed by joining the **List** by a single space.
+A *String* (`S`) is the string formed by joining the *List* by a single space.
 
 ### Improved abbreviation search
 
