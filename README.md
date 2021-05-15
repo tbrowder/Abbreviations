@@ -84,7 +84,7 @@ A *String* (`S`) is the string formed by joining the *List* by a single space.
 
 ### Improved abbreviation search
 
-The abbreviation algorithm has been improved in the following way: the input word set is first formed into subgroups based on the the first character of each word. Then the subgroups have their abbreviation sets formed, then all those sets are combined into one set. The result will be a larger number of available abbeviations in many cases than were available under the original API.
+The abbreviation algorithm has been improved in the following way: The input word set is first formed into subgroups based on the the first character of each word. Then the subgroups have their abbreviation sets formed, then all those sets are combined into one set. The result will be a larger number of available abbeviations in many cases than were available under the original API.
 
 For example, given an input set consisting of the words `A ab Abcde`, the *min-abbrev-len* is one or two for each subgroup and the default output hash of abbreviations (with the original words as keys) is now
 
@@ -92,7 +92,7 @@ For example, given an input set consisting of the words `A ab Abcde`, the *min-a
         ab    => ['a', 'ab'],
         Abcde => ['Ab', 'Abc', 'Abcd', 'Abcde'],
 
-In contrast, *without* the initial subgrouping, the *min-abbrev-len* is three for the entire set and the result will be:
+In contrast, *without* the initial subgrouping, the *min-abbrev-len* is three for the entire set and thej result will be:
 
         A     => ['A'],
         ab    => ['ab'],                   # <- one less abbreviation
