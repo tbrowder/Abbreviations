@@ -52,9 +52,9 @@ The input word set can be in one of two forms: a list (recommended) or a string 
 
 Note the input word set will not be modified unless the `:lower-case` option is used. In that case, all characters will be transformed to lower-case.
 
-One will normally get the result as a hash, but the return type can be specified via an `enum` if desired by selecting one of the `:output-type` options: `AH` (AbbrevHash), `AL` (AbbrevList), `H` (Hash), `L` (List), or `S` (String). For example,
+One will normally get the result as a hash, but the return type can be specified via an `enum` if desired by selecting one of the `:out-type` options: `AH` (AbbrevHash), `AL` (AbbrevList), `H` (Hash), `L` (List), or `S` (String). For example,
 
-    my %abbrevs = abbrevs @words, :output-type(AH);
+    my %abbrevs = abbrevs @words, :out-type(AH);
 
 ### Output types by `enum Out-type`
 
@@ -71,7 +71,7 @@ An *AbbrevHash* (`AH`) is keyed by all of the valid abbreviations for the input 
 An *AbbrevList* (`AL`) is special in that the returned list is the one, shortest abbreviation for each of the input words in input order. For example,
 
     my @w = <Monday Tuesday Wednesday Thursday Friday Saturday Sunday>;
-    my @abb = abbrevs @w, :lower-case, :output-type(AL);
+    my @abb = abbrevs @w, :lower-case, :out-type(AL);
     say @abb; # OUTPUT: m tu w th f sa su
 
   * `L` (List) 
@@ -120,9 +120,9 @@ Other exported symbols
 
 This routine sorts the input list first by the default Raku sort and then by word length. The order by length is by shortest abbreviation first unless the `:longest-first` option is used. This is the routine used for all the lists produced as output in this module *except* for the *AbbrevList* (`AL`) which keeps the original word set order.
 
-### `enum Other-type`
+### `enum Out-type`
 
-The *enum* `Other-type` is exported automatically as it is required for use of `sub abbreviations`.
+The *enum* `Out-type` is exported automatically as it is required for use of `sub abbreviations`.
 
 ### `sub auto-abbreviate`
 

@@ -96,7 +96,7 @@ sub abbreviations($word-set,
     #note "DEBUG: early exit in sub abbrevs"; exit;
 
     # the hash output is %ow and ready to go
-    return %ow if $out-type ~~ H; # 'Hash';
+    return %ow if $out-type ~~ H; # 'Hash'
 
     # use the default hash to assemble other output formats
     my @ow;
@@ -110,8 +110,8 @@ sub abbreviations($word-set,
     @ow .= unique;
     @ow = sort-list @ow;
 
-    return @ow if $out-type ~~ L; # 'List';
-    return @ow.join(' ') if $out-type ~~ S; # 'Str';
+    return @ow if $out-type ~~ L; # 'List'
+    return @ow.join(' ') if $out-type ~~ S; # 'String';
    
     if $out-type ~~ AH {
         #=== Output hash converted to AbbrevHash:
