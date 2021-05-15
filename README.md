@@ -56,7 +56,7 @@ One will normally get the result as a hash, but the return type can be specified
 
     my %abbrevs = abbrevs @words, :output-type(AH);
 
-### Output types by enum
+### Output types by `enum Out-type`
 
   * `H` (Hash)
 
