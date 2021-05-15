@@ -109,7 +109,7 @@ A I<String> (C<S>) is the string formed by joining the I<List> by a single space
 =head3 Improved abbreviation search
 
 The abbreviation algorithm has been improved in the following way:
-the input word set is
+The input word set is
 first formed into subgroups based on the the first
 character of each word. Then the subgroups have
 their abbreviation sets formed, then all those sets are combined
@@ -127,7 +127,7 @@ the default output hash of abbreviations (with the original words as keys) is no
 =end code
 
 In contrast, I<without> the initial subgrouping,
-the I<min-abbrev-len> is three for the entire set and the
+the I<min-abbrev-len> is three for the entire set and thej
 result will be:
 
 =begin code
