@@ -56,7 +56,7 @@ my @out    = @out-AL;
    @out   .= sort(&sort-len);
 my $out    = @out.join(' ');
 
-plan 32;
+plan 34;
 
 # basic in/out
 # 24 tests
@@ -126,4 +126,12 @@ dies-ok {
 my @bad-words4 = <a,  a ' ; - * ! ? ab abcde>;
 my $bad-words4-out = q{! ' * - ; ? a a, ab abc abcd abcde};
 is abbreviations(@bad-words4, :out-type(S)), $bad-words4-out, "words and punctuation";
+
+# other tests
+my @w = <Monday Tuesday Wednesday Thursday Friday Saturday Sunday>;
+my @dow = abbrevs @w, :lower-case, :out-type(AL);
+my $dow = abbrevs @w, :lower-case, :out-type(AL);
+my @d = <m tu w th f sa su>;
+is-deeply @dow, @d, "AL test on days of the week";
+is-deeply $dow, @d, "AL test on days of the week";
 
