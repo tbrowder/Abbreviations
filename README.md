@@ -92,13 +92,13 @@ For example, given an input set consisting of the words `A ab Abcde`, the *min-a
         ab    => ['a', 'ab'],
         Abcde => ['Ab', 'Abc', 'Abcd', 'Abcde'],
 
-In contrast, *without* the initial subgrouping, the *min-abbrev-len* is three for the entire set and the result would be:
+In contrast, *without* the initial subgrouping, the *min-abbrev-len* is three for the entire set and the result will be:
 
         A     => ['A'],
         ab    => ['ab'],                   # <- one less abbreviation
         Abcde => ['Abc', 'Abcd', 'Abcde'], # <- one less abbreviation
 
-If the `:lower-case` option is used we get a slightly different result since we no longer have any subgroups so the *min-abbrev-len* is again three. 
+If the `:lower-case` option is used we get a slightly different result since we no longer have any subgroups and the *min-abbrev-len* is again three. 
 
     my $words = 'A ab Abcde':
     my %abbr = abbrevs $words, :lower-case;
@@ -118,7 +118,7 @@ Other exported symbols
 
     sub sort-list(@list, :longest-first --> List) is export(:sort) {...}
 
-The routine sorts the input list first by the default Raku sort and then by word length. The order by length is by shortest first unless the `:longest-first` option is used.
+The routine sorts the input list first by the default Raku sort and then by word length. The order by length is by shortest first unless the `:longest-first` option is used. This is the routine used for all the lists produced as output in this module *except* for the *AbbrevList* (`AL`) which keeps the original word set order.
 
 ### `enum Other-type`
 
