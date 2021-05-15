@@ -3,7 +3,7 @@
 NAME
 ====
 
-Abbreviations - Provides abbreviations for an input set of one or more words
+**Abbreviations** - Provides abbreviations for an input set of one or more words
 
 Note: This version uses API 2 and is not compatible with previous versions.
 
