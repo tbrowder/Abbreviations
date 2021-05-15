@@ -58,7 +58,7 @@ The input word set can be in one of two forms:
 (1) a list (recommended)
 or (2) a string containing the words separated by spaces.
 Duplicate words will be automatically and
-quietly eliminated.
+quietly eliminated. An empty word set will cause an exception.
 
 Note the input word set will not be modified unless the C<:lower-case>
 option is used. In that case, all characters will be transformed to lower-case.
@@ -118,6 +118,7 @@ into one set. The result will be a larger number of available
 abbeviations in many cases than were available under the original API.
 
 For example, given an input set consisting of the words C<A ab Abcde>, 
+the I<min-abbrev-len> is one or two for each subgroup and 
 the default output hash of abbreviations (with the original words as keys) is now
 
 =begin code
@@ -126,7 +127,9 @@ the default output hash of abbreviations (with the original words as keys) is no
     Abcde => ['Ab', 'Abc', 'Abcd', 'Abcde'],
 =end code
 
-In contrast, I<without> the initial subgrouping, the result would be:
+In contrast, I<without> the initial subgrouping,
+the I<min-abbrev-len> is three for the entire set and the
+result would be:
 
 =begin code
     A     => ['A'],
@@ -134,8 +137,9 @@ In contrast, I<without> the initial subgrouping, the result would be:
     Abcde => ['Abc', 'Abcd', 'Abcde'], # <- one less abbreviation
 =end code
 
-
-If the C<:lower-case> option is used we get a surprisingly different result.
+If the C<:lower-case> option is used we get a slightly different result
+since we no longer have any subgroups so the I<min-abbrev-len> is again 
+three. 
 
 =begin code
 my $words = 'A ab Abcde':
@@ -157,8 +161,7 @@ Notice the input word B<ab> now has only one abbreviation and B<abcde> has only 
 =head3 C<sub sort-list>
 
 =begin code
-sub sort-list(@list, :longest-first --> List) is export(:sort) 
-{...}
+sub sort-list(@list, :longest-first --> List) is export(:sort) {...}
 =end code
 
 The routine sorts the input list first by the default Raku sort and then
@@ -167,8 +170,18 @@ option is used.
 
 =head3 C<enum Other-type>
 
-=head3 C<sub abbr>
+The I<enum> C<Other-type> is exported automatically as it is required for use of C<sub abbreviations>.
 
+=head3 C<sub auto-abbreviate>
+
+=begin code
+sub auto-abbreviate(@words) is export(:auto) {...}
+=end code
+
+This the routine, slightly modified, taken from the I<Rosetta Code> website. 
+Given a string consisting of space-separated words, it returns the
+minimum number of characters to abbreviate the set. It will fail on either
+an empty word list or one with duplicate words, so the user is fore-warned.
 
 =head1 AUTHOR
 
