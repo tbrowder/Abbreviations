@@ -49,16 +49,15 @@ C<abbreviations>, which takes as input a set of words and returns the
 original set with added unique abbreviations for the set.  (Note the
 input words are also abbreviations in the context of this module.)
 
-A I<word> satisfies the Raku regex: C<$word ~~ /\S+/> which is quite
+A I<word> satisfies the Raku regex C<$word ~~ /\S+/> which is quite
 loose. Using programs can of course further restrict that if need
 be. For example, for use with module B<Opt::Handler> words must
 satisfy this regex: C<$word ~~ /<ident>/>.
 
 The input word set can be in one of two forms: 
-(1) a list (recommended)
-or (2) a string containing the words separated by spaces.
-Duplicate words will be automatically and
-quietly eliminated. An empty word set will cause an exception.
+a list (recommended) or a string containing the words separated by spaces.
+Duplicate words will be automatically and quietly eliminated. An empty word 
+set will cause an exception.
 
 Note the input word set will not be modified unless the C<:lower-case>
 option is used. In that case, all characters will be transformed to lower-case.
