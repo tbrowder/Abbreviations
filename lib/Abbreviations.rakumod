@@ -1,6 +1,6 @@
 unit module Abbreviations:ver<0.3.3>:auth<cpan:TBROWDER>;
 
-enum Out-type is export (S => 'Str', L => 'List', AH => 'AbbrevHash', AL => 'AbbrevList', H => 'Hash');
+enum Out-type is export <S L AH AL H>;
 
 # define  "aliases" for convenience
 our &abbrevs is export         = &abbreviations;
