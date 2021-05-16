@@ -54,9 +54,9 @@ loose. Using programs can of course further restrict that if need
 be. For example, for use with module B<Opt::Handler> words must
 satisfy this regex: C<$word ~~ /<ident>/>.
 
-The input word set can be in one of two forms: 
+The input word set can be in one of two forms:
 a list (recommended) or a string containing the words separated by spaces.
-Duplicate words will be automatically and quietly eliminated. An empty word 
+Duplicate words will be automatically and quietly eliminated. An empty word
 set will cause an exception.
 
 Note the input word set will not be modified unless the C<:lower-case>
@@ -64,8 +64,8 @@ option is used. In that case, all characters will be transformed to lower-case.
 
 One will normally get the result as a hash, but the return type can
 be specified via an C<enum> if desired by selecting one of the
-C<:out-type> options: 
-C<AH> (AbbrevHash), C<AL> (AbbrevList), C<H> (Hash), C<L> (List), or C<S> (String). 
+C<:out-type> options:
+C<AH> (AbbrevHash), C<AL> (AbbrevList), C<H> (Hash), C<L> (List), or C<S> (String).
 For example,
 
 =begin code
@@ -80,9 +80,9 @@ The default I<Hash> (C<H>) returned will
 have input words as keys whose value will be a sorted list of one or more
 valid abbreviations (sorted by length, shortest first).
 
-=item C<AH> (AbbrevHash) 
+=item C<AH> (AbbrevHash)
 
-An I<AbbrevHash> (C<AH>) is keyed by all of the valid abbreviations for the input 
+An I<AbbrevHash> (C<AH>) is keyed by all of the valid abbreviations for the input
 word list and whose values are the word from which that abbreviation is defined.
 
 =item C<AL> (AbbrevList)
@@ -93,12 +93,12 @@ abbreviation for each of the input words in input order. For example,
 =begin code
 my @w = <Monday Tuesday Wednesday Thursday Friday Saturday Sunday>;
 my @abb = abbrevs @w, :lower-case, :out-type(AL);
-say @abb; # OUTPUT: « [m tu w th f sa su]»␤
+say @abb; # OUTPUT: «[m tu w th f sa su]␤»
 =end code
 
-=item C<L> (List) 
+=item C<L> (List)
 
-A I<List> (C<L>) contains all of the valid abbreviations for the input 
+A I<List> (C<L>) contains all of the valid abbreviations for the input
 word list, including the words themselves, sorted first by the default Raku sort
 and then by length (shortest first).
 
@@ -116,8 +116,8 @@ their abbreviation sets formed, then all those sets are combined
 into one set. The result will be a larger number of available
 abbeviations in many cases than were available under the original API.
 
-For example, given an input set consisting of the words C<A ab Abcde>, 
-the I<min-abbrev-len> is one or two for each subgroup and 
+For example, given an input set consisting of the words C<A ab Abcde>,
+the I<min-abbrev-len> is one or two for each subgroup and
 the default output hash of abbreviations (with the original words as keys) is now
 
 =begin code
@@ -137,8 +137,8 @@ result will be:
 =end code
 
 If the C<:lower-case> option is used, we get a slightly different result
-since we no longer have any subgroups and the I<min-abbrev-len> is again 
-three. 
+since we no longer have any subgroups and the I<min-abbrev-len> is again
+three.
 
 =begin code
 my $words = 'A ab Abcde':
@@ -178,7 +178,7 @@ The I<enum> C<Out-type> is exported automatically as it is required for use of C
 sub auto-abbreviate(@words) is export(:auto) {...}
 =end code
 
-This routine, slightly modified, is taken from the I<Rosetta Code> website. 
+This routine, slightly modified, is taken from the I<Rosetta Code> website.
 Given a string consisting of space-separated words, it returns the
 minimum number of characters to abbreviate the set. It will fail on either
 an empty word list or one with duplicate words, so the user is fore-warned.
@@ -202,4 +202,3 @@ Copyright &#x00A9; 2020-2021 Tom Browder
 This library is free software; you may redistribute or modify it under the Artistic License 2.0.
 
 =end pod
-

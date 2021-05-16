@@ -62,7 +62,7 @@ One will normally get the result as a hash, but the return type can be specified
 
 The default *Hash* (`H`) returned will have input words as keys whose value will be a sorted list of one or more valid abbreviations (sorted by length, shortest first).
 
-  * `AH` (AbbrevHash) 
+  * `AH` (AbbrevHash)
 
 An *AbbrevHash* (`AH`) is keyed by all of the valid abbreviations for the input word list and whose values are the word from which that abbreviation is defined.
 
@@ -72,9 +72,9 @@ An *AbbrevList* (`AL`) is special in that the returned list is the one, shortest
 
     my @w = <Monday Tuesday Wednesday Thursday Friday Saturday Sunday>;
     my @abb = abbrevs @w, :lower-case, :out-type(AL);
-    say @abb; # OUTPUT: « [m tu w th f sa su]»␤
+    say @abb; # OUTPUT: «[m tu w th f sa su]␤»
 
-  * `L` (List) 
+  * `L` (List)
 
 A *List* (`L`) contains all of the valid abbreviations for the input word list, including the words themselves, sorted first by the default Raku sort and then by length (shortest first).
 
@@ -98,7 +98,7 @@ In contrast, *without* the initial subgrouping, the *min-abbrev-len* is three fo
         ab    => ['ab'],                   # <- one less abbreviation
         Abcde => ['Abc', 'Abcd', 'Abcde'], # <- one less abbreviation
 
-If the `:lower-case` option is used, we get a slightly different result since we no longer have any subgroups and the *min-abbrev-len* is again three. 
+If the `:lower-case` option is used, we get a slightly different result since we no longer have any subgroups and the *min-abbrev-len* is again three.
 
     my $words = 'A ab Abcde':
     my %abbr = abbrevs $words, :lower-case;
