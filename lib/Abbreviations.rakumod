@@ -1,4 +1,4 @@
-unit module Abbreviations:ver<0.3.3>:auth<cpan:TBROWDER>;
+unit module Abbreviations:ver<1.0.0>:auth<cpan:TBROWDER>;
 
 enum Out-type is export <S L AH AL H>;
 

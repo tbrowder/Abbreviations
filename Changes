@@ -1,4 +1,6 @@
 {{$NEXT}}
+
+1.0.0  2021-05-15T19:54:14-05:00
     - API 2 with significant differences in output formats
     - Added an enum type and named option to identify the desired output type, 
       removed the old multiple named option selectors
