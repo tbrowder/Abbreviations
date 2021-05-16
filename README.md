@@ -72,7 +72,7 @@ An *AbbrevList* (`AL`) is special in that the returned list is the one, shortest
 
     my @w = <Monday Tuesday Wednesday Thursday Friday Saturday Sunday>;
     my @abb = abbrevs @w, :lower-case, :out-type(AL);
-    say @abb; # OUTPUT: m tu w th f sa su
+    say @abb; # OUTPUT: E<0xAB>[m tu w th f sa su]>>
 
   * `L` (List) 
 
