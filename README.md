@@ -147,7 +147,7 @@ CREDITS
 COPYRIGHT and LICENSE
 =====================
 
-Copyright &#x00A9; 2020-2021 Tom Browder
+Copyright © 2020-2021 Tom Browder
 
 This library is free software; you may redistribute or modify it under the Artistic License 2.0.
 
