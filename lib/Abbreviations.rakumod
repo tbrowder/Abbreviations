@@ -1,4 +1,4 @@
-unit module Abbreviations:ver<1.0.0>:auth<cpan:TBROWDER>;
+unit module Abbreviations;
 
 enum Out-type is export <S L AH AL H>;
 
@@ -40,16 +40,16 @@ sub abbreviations($word-set,
     }
 
     # remove any dups
-    @abbrev-words .= unique; 
+    @abbrev-words .= unique;
     @input-order  = @abbrev-words;
 
     if $lower-case {
         $_ .= lc for @abbrev-words;
-        @abbrev-words .= unique; 
+        @abbrev-words .= unique;
         @input-order-lower-case = @abbrev-words;
     }
 
-    # A default returned Hash has the input words as keys whose values are 
+    # A default returned Hash has the input words as keys whose values are
     # a sorted list of strings of their unique shorter abbreviations, if
     # any. Note all sorts use sub 'sort-list'.
 
@@ -102,7 +102,7 @@ sub abbreviations($word-set,
     my @ow;
     for %ow.kv -> $k, $v {
         @ow.push: $k;
-        @ow.push($_) for @($v); 
+        @ow.push($_) for @($v);
     }
 
     # the list and string output formats will have all words (keys) and abbreviation
@@ -112,10 +112,10 @@ sub abbreviations($word-set,
 
     return @ow if $out-type ~~ L; # 'List'
     return @ow.join(' ') if $out-type ~~ S; # 'String';
-   
+
     if $out-type ~~ AH {
         #=== Output hash converted to AbbrevHash:
-        # The AbbrevHash is keyed by all abbreviations for 
+        # The AbbrevHash is keyed by all abbreviations for
         # each word and its value is that word.
         my %ah;
         for %ow.kv -> $w, $v {
@@ -129,7 +129,7 @@ sub abbreviations($word-set,
 
     if $out-type ~~ AL {
         #=== Output hash converted to AbbrevList:
-        # The AbbrevList is the list of the min abbreviations for 
+        # The AbbrevList is the list of the min abbreviations for
         # each word in the original input order.
         my @al;
         my @in = @abbrev-words;
@@ -160,7 +160,7 @@ sub get-abbrevs($group, :%ow, :%group, :$debug) {
         # %ow should NOT have this word yet
         die "FATAL: Unexpected duplicate input word '$w' in group '$group'. \%group: {say %group.raku}"
             if %ow{$w}:exists;
-       
+
         my $nc = $w.chars;
 
         # any abbreviations?
@@ -178,7 +178,7 @@ sub get-abbrevs($group, :%ow, :%group, :$debug) {
             @a.push: $a;
             ++$len;
         }
-        
+
         @a .= unique;
         # sort the list two ways
         @a = sort-list @a;
@@ -217,4 +217,3 @@ sub sort-list(@list is copy, :$longest-first) is export(:auto, :sort) {
     # sort by shortest word first
     @list.sort({$^a.chars cmp $^b.chars});
 }
-
