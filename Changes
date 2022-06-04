@@ -1,4 +1,5 @@
 {{$NEXT}}
+    - Remove meta testing which caused installlation problems
 
 1.0.1  2021-12-06T06:02:30-06:00
     - Converted to live on the Zef repository
