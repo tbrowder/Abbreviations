@@ -82,9 +82,9 @@ A *String* (`S`) is the string formed by joining the *List* by a single space be
 
 ### Improved abbreviation search
 
-The abbreviation algorithm has been improved in the following way: The input word set is formed into subgroups comprised of each imput word. Abbreviations are created for each word, abbreviations shared by two or words are eliminated, then all those abbreviations are combined into one set. The result will be the largest possible set of unique abbreviations for a given input word set.
+The abbreviation algorithm has been improved in the following way: The input word set is formed into subgroups comprised of each input word. Abbreviations are created for each word, abbreviations shared by two or words are eliminated, then all those abbreviations are combined into one set. The result will be the largest possible set of unique abbreviations for a given input word set.
 
-For example, given an input set consisting of the words `A ab Abcde`, the default output hash of abbreviations (with the original words as keys) is contains a total of seven abbreviations:
+For example, given an input set consisting of the words `A ab Abcde`, the default output hash of abbreviations (with the original words as keys) contains a total of seven abbreviations:
 
         A     => ['A'],
         ab    => ['a', 'ab'],

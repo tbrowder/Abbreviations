@@ -112,14 +112,14 @@ A I<String> (C<S>) is the string formed by joining the I<List> by a single space
 
 The abbreviation algorithm has been improved in the following way:
 The input word set is
-formed into subgroups comprised of each imput word. Abbreviations
+formed into subgroups comprised of each input word. Abbreviations
 are created for each word, abbreviations shared by two or words are eliminated,
 then all those abbreviations are combined
 into one set. The result will be the largest possible set of unique
 abbreviations for a given input word set.
 
 For example, given an input set consisting of the words C<A ab Abcde>,
-the default output hash of abbreviations (with the original words as keys) is
+the default output hash of abbreviations (with the original words as keys)
 contains a total of seven abbreviations:
 
 =begin code
