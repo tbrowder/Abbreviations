@@ -119,8 +119,8 @@ into one set. The result will be the largest possible set of unique
 abbreviations for a given input word set.
 
 For example, given an input set consisting of the words C<A ab Abcde>,
-the I<min-abbrev-len> is one or two for each word and
-the default output hash of abbreviations (with the original words as keys) is now
+the default output hash of abbreviations (with the original words as keys) is
+contains a total of seven abbreviations:
 
 =begin code
     A     => ['A'],
@@ -129,7 +129,8 @@ the default output hash of abbreviations (with the original words as keys) is no
 =end code
 
 If the C<:lower-case> option is used, we get a slightly different result
-since we have fewer unique words so there are fewer unique abbreviations.
+since we have fewer unique abbreviations from the lower-cased words.
+The new hash has only five abbreviations:
 
 =begin code
 my $words = 'A ab Abcde':

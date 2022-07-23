@@ -84,13 +84,13 @@ A *String* (`S`) is the string formed by joining the *List* by a single space be
 
 The abbreviation algorithm has been improved in the following way: The input word set is formed into subgroups comprised of each imput word. Abbreviations are created for each word, abbreviations shared by two or words are eliminated, then all those abbreviations are combined into one set. The result will be the largest possible set of unique abbreviations for a given input word set.
 
-For example, given an input set consisting of the words `A ab Abcde`, the *min-abbrev-len* is one or two for each word and the default output hash of abbreviations (with the original words as keys) is now
+For example, given an input set consisting of the words `A ab Abcde`, the default output hash of abbreviations (with the original words as keys) is contains a total of seven abbreviations:
 
         A     => ['A'],
         ab    => ['a', 'ab'],
         Abcde => ['Ab', 'Abc', 'Abcd', 'Abcde'],
 
-If the `:lower-case` option is used, we get a slightly different result since we have fewer unique words so there are fewer unique abbreviations.
+If the `:lower-case` option is used, we get a slightly different result since we have fewer unique abbreviations from the lower-cased words. The new hash has only five abbreviations:
 
     my $words = 'A ab Abcde':
     my %abbr = abbrevs $words, :lower-case;
