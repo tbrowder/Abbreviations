@@ -5,15 +5,13 @@ NAME
 
 **Abbreviations** - Provides abbreviations for an input set of one or more words
 
-Note: This version uses API 2 and is not compatible with previous versions.
-
 SYNOPSIS
 ========
 
 ```raku
 use Abbreviations;
 my $words = 'A ab Abcde';
-# The main exported routine:
+# The exported routine:
 my %abbrevs = abbreviations $words;
 ```
 
@@ -46,9 +44,9 @@ DESCRIPTION
 
 **Abbreviations** is a module with one automatically exported subroutine, `abbreviations`, which takes as input a set of words and returns the original set with added unique abbreviations for the set. (Note the input words are also abbreviations in the context of this module.)
 
-A *word* satisfies the Raku regex `$word ~~ /\S+/` which is quite loose. Using programs can of course further restrict that if need be. For example, for use with module **Opt::Handler** words must satisfy this regex: `$word ~~ /<ident>/`.
+A *word* satisfies the Raku regex `$word ~~ /\S+/` which is quite loose. Using programs can of course further restrict that if need be. For example, for use with module **Opt::Handler** words must satisfy this regex: `$word ~~ /<ident>/`. (**CAUTION**: Words containing other than letters have not been tested and results are unknown. The author is willing to investigate those words if any user is so interested and files an issue indicating such.)
 
-The input word set can be in one of two forms: a list (recommended) or a string containing the words separated by spaces. Duplicate words will be automatically and quietly eliminated. An empty word set will cause an exception.
+The input word set can be in one of two forms: a list or a string containing the words separated by spaces. Duplicate words will be automatically and quietly eliminated. An empty word set will cause an exception.
 
 Note the input word set will not be modified unless the `:lower-case` option is used. In that case, all characters will be transformed to lower-case.
 
@@ -84,21 +82,15 @@ A *String* (`S`) is the string formed by joining the *List* by a single space be
 
 ### Improved abbreviation search
 
-The abbreviation algorithm has been improved in the following way: The input word set is first formed into subgroups based on the the first character of each word, next the subgroups have their abbreviation sets formed, then all those sets are combined into one set. The result will be a larger number of available abbeviations in many cases than were available under the original API.
+The abbreviation algorithm has been improved in the following way: The input word set is formed into subgroups comprised of each imput word. Abbreviations are created for each word, abbreviations shared by two or words are eliminated, then all those abbreviations are combined into one set. The result will be the largest possible set of unique abbreviations for a given input word set.
 
-For example, given an input set consisting of the words `A ab Abcde`, the *min-abbrev-len* is one or two for each subgroup and the default output hash of abbreviations (with the original words as keys) is now
+For example, given an input set consisting of the words `A ab Abcde`, the *min-abbrev-len* is one or two for each word and the default output hash of abbreviations (with the original words as keys) is now
 
         A     => ['A'],
         ab    => ['a', 'ab'],
         Abcde => ['Ab', 'Abc', 'Abcd', 'Abcde'],
 
-In contrast, *without* the initial subgrouping, the *min-abbrev-len* is three for the entire set and the result will be:
-
-        A     => ['A'],
-        ab    => ['ab'],                   # <- one less abbreviation
-        Abcde => ['Abc', 'Abcd', 'Abcde'], # <- one less abbreviation
-
-If the `:lower-case` option is used, we get a slightly different result since we no longer have any subgroups and the *min-abbrev-len* is again three.
+If the `:lower-case` option is used, we get a slightly different result since we have fewer unique words so there are fewer unique abbreviations.
 
     my $words = 'A ab Abcde':
     my %abbr = abbrevs $words, :lower-case;
@@ -108,8 +100,6 @@ The result is
         a     => ['a'],
         ab    => ['ab],
         abcde => ['abc', 'abcd', 'abcde'],
-
-Notice the input word **ab** now has only one abbreviation and **abcde** has only three.
 
 Other exported symbols
 ----------------------
@@ -126,14 +116,14 @@ The *enum* `Out-type` is exported automatically as it is required for use of `su
 
 ### `sub auto-abbreviate`
 
-    sub auto-abbreviate(@words) is export(:auto) {...}
+This module **no longer uses** the `auto-abbreviate` routine from the *Rosetta Code* website. That routine did not give the desired results because it was too restricted by a single minimum abbreviation length for the entire input word set.
 
-This routine, slightly modified, is taken from the *Rosetta Code* website. Given a string consisting of space-separated words, it returns the minimum number of characters to abbreviate the set. It will fail on either an empty word list or one with duplicate words, so the user is fore-warned.
+Note the new algorithm still fails on an empty word set,
 
 AUTHOR
 ======
 
-Tom Browder <tbrowder@cpan.org>
+Tom Browder <tbrowder@acm.org>
 
 CREDITS
 =======

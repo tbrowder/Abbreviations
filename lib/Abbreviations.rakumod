@@ -10,6 +10,76 @@ our &abbr    is export(:abbr)  = &abbreviations;
 our &abb     is export(:abb)   = &abbreviations;
 our &ab      is export(:ab)    = &abbreviations;
 our &a       is export(:a)     = &abbreviations;
+
+sub get-abbrevs(@abbrev-words, :$debug --> Hash) is export {
+    # @ow - A list of original, unique words (downcased if desired)
+    my @ow = @abbrev-words;
+    my %ow;
+    %ow{$_} = 1 for @ow;
+
+    # %abbrevs  - The final solution should be in the hash with its 
+    #       keys being the list of valid abbreviations
+    #    and its value the using $word.
+    my %abbrevs; # keys are abbrevs, value list of using words
+
+    for @ow -> $word {
+        my $n = $word.chars;
+        die "FATAL: zero word length" if not $n;
+        # IMPORTANT: at this stage of the collection, the $word is NOT an abbreviation
+        #            but it will be added later.
+        for 1..$n {
+            my $abbrev = $word.substr(0, $_);
+            next if %ow{$abbrev}:exists;
+            if %abbrevs{$abbrev}:exists {
+                %abbrevs{$abbrev}.push: $word;
+            }
+            else {
+                %abbrevs{$abbrev} = [];
+                %abbrevs{$abbrev}.push: $word;
+            }
+        }
+    }
+
+    # delete all abbrevs not having exactly one word associated with it
+    for %abbrevs.kv -> $abbrev, $wordlist {
+        my $nw = $wordlist.elems;
+        if $nw != 1 {
+            %abbrevs{$abbrev}:delete;
+        }
+    }
+
+    if $debug {
+        note "DEBUG: dumping %abbrev hash:";
+        note %abbrevs.raku;
+    }
+
+    # TODO remove this annoying extra step by changing the caller or this sub!!!
+    # the hash needs to be converted to the default H (Hash) type because of the needs of the caller
+    my %m;
+    for %abbrevs.kv -> $a, $w {
+        if %m{$w}:exists {
+            %m{$w}.push: $a;
+        }
+        else {
+            %m{$w} = [];
+            %m{$w}.push: $a;
+        }
+    }
+    # now add the word as an abbreviation for itself
+    for %ow.keys -> $w {
+        %m{$w}.push: $w;
+    }
+
+    # ensure the lists are properly sorted
+    for %m.kv -> $w, $abbrev-list {
+        my @w = sort-list @($abbrev-list);
+        %m{$w} = @w;
+    }
+
+    %m;
+
+} # sub get-newabbrevs
+
 sub abbreviations($word-set,
                   Out-type :$out-type = H,
                   :$lower-case,
@@ -49,65 +119,21 @@ sub abbreviations($word-set,
         @input-order-lower-case = @abbrev-words;
     }
 
-    # A default returned Hash has the input words as keys whose values are
-    # a sorted list of strings of their unique shorter abbreviations, if
-    # any. Note all sorts use sub 'sort-list'.
+    # TODO here: use new algorithm described in the dev/README.algorithm
+    # file.
+    # use hash to assemble other output formats
+    my %m = get-abbrevs @abbrev-words, :$debug;
 
-    my %group; # top key is a subgroup based on the first character of the word
-    # classify all words by first character
-    if $debug {
-        note qq:to/HERE/;
-        DEBUG: classifying groups. Number of \@abbrev-words is {@abbrev-words.elems}
-               dumping \@abbrev-words: '{@abbrev-words.raku}'";
-        HERE
-    }
+    # the hash output is %m and ready to go (keys are words)
+    return %m if $out-type ~~ H; # 'Hash'
 
-    for @abbrev-words -> $w {
-        note "DEBUG: classifying groups for word '$w'" if $debug;
-        my $c = $w.comb[0];
-        note "DEBUG: considering character '$c'" if $debug;
-        if %group{$c}:exists {
-            %group{$c}.push: $w;
-        }
-        else {
-            %group{$c} = [];
-            %group{$c}.push: $w;
-        }
-    }
-    note "DEBUG: finished classifying groups..." if $debug;
-
-    # At this point we have:
-    #   + thrown an exception for an empty input word set.
-    #   + down-cased the input words if option :lower-case was used
-    #   + removed dups from the input word set
-    #   + divided the input string into leading character case type
-
-    note "DEBUG: ready to assemble groups" if $debug;
-
-    my %ow; # hash to hold the input words as keys and their abbreviations as sorted lists
-    for %group.keys -> $group {
-        note "DEBUG: considering group '$group'" if $debug;
-        get-abbrevs $group, :%ow, :%group;
-    }
-
-    note "DEBUG: dumping \%group: '{%group.raku}'" if $debug;
-    note "DEBUG: dumping \%ow: '{%ow.raku}'" if $debug;
-
-    #note "DEBUG: early exit in sub abbrevs"; exit;
-
-    # the hash output is %ow and ready to go
-    return %ow if $out-type ~~ H; # 'Hash'
-
-    # use the default hash to assemble other output formats
-    my @ow;
-    for %ow.kv -> $k, $v {
-        @ow.push: $k;
-        @ow.push($_) for @($v);
-    }
-
-    # the list and string output formats will have all words (keys) and abbreviation
+    # the list and string output formats will have all words (keys) and abbreviations
     # sorted by default then length (shortest first)
-    @ow .= unique;
+    my @ow;
+    for %m.kv -> $k, $abbrev-list {
+        my @list = @($abbrev-list);
+        @ow.push: |@list;
+    };
     @ow = sort-list @ow;
 
     return @ow if $out-type ~~ L; # 'List'
@@ -118,12 +144,14 @@ sub abbreviations($word-set,
         # The AbbrevHash is keyed by all abbreviations for
         # each word and its value is that word.
         my %ah;
-        for %ow.kv -> $w, $v {
-            for @($v) -> $a {
-                die "FATAL: Unexpected dup abbev '$a' for word '$w'" if %ah{$a}:exists;
-                %ah{$a} = $w;
+        for %m.kv -> $word, $abbrev-list {
+            for @($abbrev-list) -> $abbrev {
+                note "ERROR: Unexpected dup abbrev '$abbrev' for word '$word'" if %ah{$abbrev}:exists;
+                %ah{$abbrev} = $word;
             }
         }
+        note "DEBUG: out-type(AH) in words: {@ow}" if $debug;
+        note "DEBUG:               abbrevs: {%ah.raku}" if $debug;
         return %ah;
     }
 
@@ -135,80 +163,15 @@ sub abbreviations($word-set,
         my @in = @abbrev-words;
         for @in -> $w {
             # for each word, add its min abbrev to the list
-            my $m = @(%ow{$w})[0];
+            my $m = @(%m{$w})[0];
             @al.push: $m;
         }
-        note "DEBUG: in words: {@in}" if $debug;
-        note "DEBUG:  abbrevs: {@al}" if $debug;
+        note "DEBUG: out-type(AL) in words: {@in}" if $debug;
+        note "DEBUG:               abbrevs: {@al}" if $debug;
         return @al;
     }
 
 } # end sub abbreviations
-
-sub get-abbrevs($group, :%ow, :%group, :$debug) {
-    my @input-words = @(%group{$group});
-
-    # Get the min number of characters needed to have a unique
-    # abbreviation.  If the number of characters in a word is equal or
-    # less, then it has no abbreviation.
-    my $min-chars = auto-abbreviate @input-words;
-
-    note "DEBUG: get-abbrevs, \$group $group, word list: '{@input-words.raku}'" if $debug;
-    note "DEBUG: get-abbrevs, min abbrev chars: $min-chars" if $debug;
-
-    WORD: for @input-words -> $w {
-        # %ow should NOT have this word yet
-        die "FATAL: Unexpected duplicate input word '$w' in group '$group'. \%group: {say %group.raku}"
-            if %ow{$w}:exists;
-
-        my $nc = $w.chars;
-
-        # any abbreviations?
-        if $nc <= $min-chars {
-            %ow{$w} = [$w];
-            next WORD;
-        }
-
-        my @a;
-        # Handle the abbreviations
-        my $len = $min-chars;
-        while $len <= $nc {
-            # using $nc as the max length will include the word as the last abbreviation
-            my $a = $w.substr(0, $len);
-            @a.push: $a;
-            ++$len;
-        }
-
-        @a .= unique;
-        # sort the list two ways
-        @a = sort-list @a;
-
-        # add the list to the key
-        %ow{$w} = @a;
-
-        note "DEBUG: end of a key fill in sub get-abbrevs" if $debug;
-    }
-
-} # end sub get-abbrevs
-
-sub auto-abbreviate(@words) is export(:auto) {
-    # Given a string consisting of space-separated words, return the
-    # minimum number of characters to abbreviate the set.  WARNING:
-    # Inf is returned if there are duplicate words in the string, so
-    # the user is warned to avoid that or catch the error exception.
-    #
-    # Source: http://rosettacode.org/wiki/Abbreviations,_automatic#Raku
-    # Author: @thundergnat
-
-    return Nil unless @words; # The caller should of taken care of that.
-
-    # The normal situation:
-    return $_ if @words>>.substr(0, $_).Set == @words for 1 .. @words>>.chars.max;
-
-    # There are duplicate words in the input word set.
-    # NOTE: Our caller should have taken care of that.
-    return Inf;
-} # end sub auto-abbreviate
 
 sub sort-list(@list is copy, :$longest-first) is export(:auto, :sort) {
     # always sort by standard sort first

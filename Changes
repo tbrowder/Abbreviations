@@ -1,4 +1,9 @@
 {{$NEXT}}
+    - Remove the auto-abbreviate sub and rewrite the get-abbrevs sub
+      to maxmize abbreviation creation
+    - Add new tests for the upgraded abbreviations algorithm
+    - Update README.pod
+    - Change author email
 
 1.0.3  2022-06-04T06:46:07-05:00
     - Update Meta6 description to match the README (capitalize the first word)

@@ -1,15 +1,25 @@
 Algorithm to get the set of minimum-length keys for an input word list:
 
-  %ow - make a hash to hold the original words with a list of valid
-        abbreviations
+  @ow - A list of original, unique words (downcased if desired)
 
-  %w - make a working hash of first characters (key length = 1)
-       with values a list of those words with that leading character.
+  %ow - A hash to hold the original words as keys with a set of 
+        valid abbreviations from length 1 to nchars for each key.
+        and a hash of those abbreviations:
 
-  For each key in the working hash, %w, add the keys with single 
-  value elements to the master hash, %m, and remove the key from
-  the working hash, %w.
+  %w  - A starting working hash of first characters (key length = 1)
+        with values a list of those words with that leading character.
+        The hash will be emptied after each iteration.
 
-  While the working hash has more than one element, break the hash 
-  into N+1-character keys and repeat.
+  %m  - The final solution should be in the master hash, %m, with its keys
+        being the list of abbreviations and its value the word for it.
+
+  Step 1: For each key in the working hash, %w, add the keys with single 
+  value elements (original words) to the master hash, %m, and remove 
+  that key's value from the %ow hash. Empty the %w hash.
+
+  While the working %ow hash has more than one element, break the %ow hash 
+  keys into N+1-character keys in the %w hash and repeat Step 1.
+
+  The final solution should be in the master hash, %m, with its keys
+  being the list of abbreviations.
 

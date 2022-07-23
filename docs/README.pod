@@ -4,14 +4,12 @@
 
 B<Abbreviations> - Provides abbreviations for an input set of one or more words
 
-Note: This version uses API 2 and is not compatible with previous versions.
-
 =head1 SYNOPSIS
 
 =begin code :lang<raku>
 use Abbreviations;
 my $words = 'A ab Abcde';
-# The main exported routine:
+# The exported routine:
 my %abbrevs = abbreviations $words;
 =end code
 
@@ -53,9 +51,13 @@ A I<word> satisfies the Raku regex C<$word ~~ /\S+/> which is quite
 loose. Using programs can of course further restrict that if need
 be. For example, for use with module B<Opt::Handler> words must
 satisfy this regex: C<$word ~~ /<ident>/>.
+(B<CAUTION>: Words containing other than letters have not been tested
+and results are unknown. The author is willing to investigate those
+words if any user is so interested and files an issue indicating such.)
+
 
 The input word set can be in one of two forms:
-a list (recommended) or a string containing the words separated by spaces.
+a list or a string containing the words separated by spaces.
 Duplicate words will be automatically and quietly eliminated. An empty word
 set will cause an exception.
 
@@ -110,14 +112,14 @@ A I<String> (C<S>) is the string formed by joining the I<List> by a single space
 
 The abbreviation algorithm has been improved in the following way:
 The input word set is
-first formed into subgroups based on the the first
-character of each word, next the subgroups have
-their abbreviation sets formed, then all those sets are combined
-into one set. The result will be a larger number of available
-abbeviations in many cases than were available under the original API.
+formed into subgroups comprised of each imput word. Abbreviations
+are created for each word, abbreviations shared by two or words are eliminated,
+then all those abbreviations are combined
+into one set. The result will be the largest possible set of unique
+abbreviations for a given input word set.
 
 For example, given an input set consisting of the words C<A ab Abcde>,
-the I<min-abbrev-len> is one or two for each subgroup and
+the I<min-abbrev-len> is one or two for each word and
 the default output hash of abbreviations (with the original words as keys) is now
 
 =begin code
@@ -126,19 +128,8 @@ the default output hash of abbreviations (with the original words as keys) is no
     Abcde => ['Ab', 'Abc', 'Abcd', 'Abcde'],
 =end code
 
-In contrast, I<without> the initial subgrouping,
-the I<min-abbrev-len> is three for the entire set and the
-result will be:
-
-=begin code
-    A     => ['A'],
-    ab    => ['ab'],                   # <- one less abbreviation
-    Abcde => ['Abc', 'Abcd', 'Abcde'], # <- one less abbreviation
-=end code
-
 If the C<:lower-case> option is used, we get a slightly different result
-since we no longer have any subgroups and the I<min-abbrev-len> is again
-three.
+since we have fewer unique words so there are fewer unique abbreviations.
 
 =begin code
 my $words = 'A ab Abcde':
@@ -152,8 +143,6 @@ The result is
     ab    => ['ab],
     abcde => ['abc', 'abcd', 'abcde'],
 =end code
-
-Notice the input word B<ab> now has only one abbreviation and B<abcde> has only three.
 
 =head2 Other exported symbols
 
@@ -174,18 +163,16 @@ The I<enum> C<Out-type> is exported automatically as it is required for use of C
 
 =head3 C<sub auto-abbreviate>
 
-=begin code
-sub auto-abbreviate(@words) is export(:auto) {...}
-=end code
+This module B<no longer uses> the C<auto-abbreviate> routine from the I<Rosetta Code> website.
+That routine did not give the desired results because it was
+too restricted by a single minimum abbreviation length for the entire
+input word set.
 
-This routine, slightly modified, is taken from the I<Rosetta Code> website.
-Given a string consisting of space-separated words, it returns the
-minimum number of characters to abbreviate the set. It will fail on either
-an empty word list or one with duplicate words, so the user is fore-warned.
+Note the new algorithm still fails on an empty word set,
 
 =head1 AUTHOR
 
-Tom Browder <tbrowder@cpan.org>
+Tom Browder <tbrowder@acm.org>
 
 =head1 CREDITS
 
