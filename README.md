@@ -114,12 +114,6 @@ This routine sorts the input list first by the default Raku sort and then by wor
 
 The *enum* `Out-type` is exported automatically as it is required for use of `sub abbreviations`.
 
-### `sub auto-abbreviate`
-
-This module **no longer uses** the `auto-abbreviate` routine from the *Rosetta Code* website. That routine did not give the desired results because it was too restricted by a single minimum abbreviation length for the entire input word set.
-
-Note the new algorithm still fails on an empty word set,
-
 AUTHOR
 ======
 

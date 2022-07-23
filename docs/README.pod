@@ -162,15 +162,6 @@ in this module I<except> for the I<AbbrevList> (C<AL>) which keeps the original 
 
 The I<enum> C<Out-type> is exported automatically as it is required for use of C<sub abbreviations>.
 
-=head3 C<sub auto-abbreviate>
-
-This module B<no longer uses> the C<auto-abbreviate> routine from the I<Rosetta Code> website.
-That routine did not give the desired results because it was
-too restricted by a single minimum abbreviation length for the entire
-input word set.
-
-Note the new algorithm still fails on an empty word set,
-
 =head1 AUTHOR
 
 Tom Browder <tbrowder@acm.org>

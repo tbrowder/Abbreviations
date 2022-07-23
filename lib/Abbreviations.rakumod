@@ -92,7 +92,7 @@ sub abbreviations($word-set,
     my @input-order; # holds the original order before any lower-casing
     my @input-order-lower-case;
 
-    # determine the input type and generate the input word lists accordingly
+    # Determine the input type and generate the input word lists accordingly
     if $word-set ~~ Str {
         @abbrev-words = $word-set.words;
         @input-order  = @abbrev-words;
@@ -109,7 +109,7 @@ sub abbreviations($word-set,
         die "FATAL: Empty input word set.";
     }
 
-    # remove any dups
+    # Remove any dups
     @abbrev-words .= unique;
     @input-order  = @abbrev-words;
 
@@ -119,15 +119,13 @@ sub abbreviations($word-set,
         @input-order-lower-case = @abbrev-words;
     }
 
-    # TODO here: use new algorithm described in the dev/README.algorithm
-    # file.
-    # use hash to assemble other output formats
+    # Use the output hash to assemble other output formats
     my %m = get-abbrevs @abbrev-words, :$debug;
 
-    # the hash output is %m and ready to go (keys are words)
+    # The hash output is %m and ready to go (keys are words)
     return %m if $out-type ~~ H; # 'Hash'
 
-    # the list and string output formats will have all words (keys) and abbreviations
+    # The list and string output formats will have all words (keys) and abbreviations
     # sorted by default then length (shortest first)
     my @ow;
     for %m.kv -> $k, $abbrev-list {
@@ -170,6 +168,8 @@ sub abbreviations($word-set,
         note "DEBUG:               abbrevs: {@al}" if $debug;
         return @al;
     }
+
+    die "FATAL: Should not reach this line.";
 
 } # end sub abbreviations
 
