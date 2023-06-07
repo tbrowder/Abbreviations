@@ -5,16 +5,23 @@ use Abbreviations :ALL;
 my $debug = 0;
 
 ##### subroutines #####
-sub sort-len {$^a.chars cmp $^b.chars}
+sub sort-len {$^a.chars cmp $^b.chars} 
 
 # good input test data
 my @in = <A ab Abcde>;
 my $in = @in.join(' ');
+my %in = [ A => 0, ab => 1, Abcde => 2 ];
 
-# EXPECTED
+# EXPECTED OUTPUT
 # lower-case option: min abbrev 3
-my %outL = [
-    # keyed by the input words, lower-cased
+my %outL-HA = [
+    # keyed by the input words, lower-cased, default out-type HA
+    a     => 'a',
+    ab    => 'ab',
+    abcde => 'abc',
+];
+my %outL-H = [
+    # keyed by the input words, lower-cased, out-type H
     a     => ['a'],
     ab    => ['ab'],
     abcde => ['abc', 'abcd', 'abcde'],
@@ -27,6 +34,7 @@ my %outL-AH = [
     abcd  => 'abcde',
     abcde => 'abcde',
 ];
+#my @in = <A ab Abcde>;
 my @outL-AL = <a ab abc>;
 my @outL    = @outL-AL;
    @outL   .= append(<abcd abcde>);
@@ -35,8 +43,15 @@ my @outL    = @outL-AL;
 my $outL    = @outL.join(' ');
 
 # default case-sensitive
-my %out = [
-    # keyed by the input words
+my %out-HA = [
+    # keyed by the input words and, optionally, $out-type HA
+    A     => 'A',
+    Abcde => 'Ab',
+    ab    => 'a',
+];
+my %out-H = [
+    # keyed by the input words and $out-type H
+    # (this was the default)
     A     => ['A'],
     Abcde => ['Ab', 'Abc', 'Abcd', 'Abcde'],
     ab    => ['a', 'ab'],
@@ -51,6 +66,8 @@ my %out-AH = [
     a     => 'ab',
     ab    => 'ab',
 ];
+#my @in = <A ab Abcde>;
+#my @outL-AL = <a ab abc>;
 my @out-AL = <A a Ab>;
 my @out    = @out-AL;
    @out   .= append(<Abc Abcd Abcde ab>);
@@ -64,17 +81,31 @@ plan 34;
 # 24 tests
 
 # default, keep existing case
-is-deeply abbreviations($in, :$debug), %out, "string in, hash out";
+is-deeply abbreviations($in, :$debug), %out-HA, "string in, default hash HA out";
+is-deeply abbreviations($in, :out-type(HA), :$debug), %out-HA, "string in, hash HA (default)";
+is-deeply abbreviations($in, :out-type(H), :$debug), %out-H, "string in, hash H (old default)";
 is-deeply abbreviations($in, :out-type(AH), :$debug), %out-AH, "string in, AbbrevHash out";
 is-deeply abbreviations($in, :out-type(AL), :$debug), @out-AL, "string in, AbbrevList out";
 is-deeply abbreviations($in, :out-type(L), :$debug), @out, "string in, List out";
 is        abbreviations($in, :out-type(S), :$debug), $out, "string in, Str out";
 
-is-deeply abbreviations(@in), %out, "list in, hash out";
+is-deeply abbreviations(@in, :$debug), %out-HA, "list in, default hash HA out";
+is-deeply abbreviations(@in, :out-type(HA), :$debug), %out-HA, "list in, default hash HA out";
+is-deeply abbreviations(@in, :out-type(H), :$debug), %out-H, "list in, hash H out";
 is-deeply abbreviations(@in, :out-type(AH), :$debug), %out-AH, "list in, AbbrevHash out";
 is-deeply abbreviations(@in, :out-type(AL), :$debug), @out-AL, "list in, AbbrevList out";
 is-deeply abbreviations(@in, :out-type(L), :$debug), @out, "list in, List out";
 is        abbreviations(@in, :out-type(S), :$debug), $out, "list in, Str out";
+
+is-deeply abbreviations(%in, :$debug), %out-HA, "hash in, default hash HA out";
+is-deeply abbreviations(%in, :out-type(HA), :$debug), %out-HA, "hash in, default hash HA out";
+is-deeply abbreviations(%in, :out-type(H), :$debug), %out-H, "hash in, hash H out";
+is-deeply abbreviations(%in, :out-type(AH), :$debug), %out-AH, "hash in, AbbrevHash out";
+is-deeply abbreviations(%in, :out-type(AL), :$debug), @out-AL, "hash in, AbbrevList out";
+is-deeply abbreviations(%in, :out-type(L), :$debug), @out, "hash in, List out";
+is        abbreviations(%in, :out-type(S), :$debug), $out, "hash in, Str out";
+
+=finish
 
 # test :lower-case option
 is-deeply abbreviations($in, :lower-case, :$debug), %outL, "string in, hash out, lower-case";

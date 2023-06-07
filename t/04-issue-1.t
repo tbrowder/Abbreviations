@@ -3,7 +3,7 @@ use Test;
 use Abbreviations :ALL;
 
 ##### subroutines #####
-sub sort-len {$^a.chars cmp $^b.chars}
+sub sort-len {$^a.chars cmp $^b.chars} # now exported by the module as sort-list
 
 # from issue #1
 my $debug = 0;

@@ -1,4 +1,4 @@
-[![Actions Status](https://github.com/tbrowder/Abbreviations/workflows/test/badge.svg)](https://github.com/tbrowder/Abbreviations/actions)
+[![Actions Status](https://github.com/tbrowder/Abbreviations/actions/workflows/linux.yml/badge.svg)](https://github.com/tbrowder/Abbreviations/actions) [![Actions Status](https://github.com/tbrowder/Abbreviations/actions/workflows/macos.yml/badge.svg)](https://github.com/tbrowder/Abbreviations/actions) [![Actions Status](https://github.com/tbrowder/Abbreviations/actions/workflows/windows.yml/badge.svg)](https://github.com/tbrowder/Abbreviations/actions)
 
 NAME
 ====
