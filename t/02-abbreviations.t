@@ -4,6 +4,8 @@ use Abbreviations :ALL;
 
 my $debug = 0;
 
+plan 42;
+
 # good input test data
 my @in = <A ab Abcde>;                    # arbitrary input order
 my $in = @in.join(' ');                   # same as a string
@@ -70,11 +72,6 @@ my @out    = @out-AL;
    @out   .= append: <Abc Abcd Abcde ab>;
    @out    = sort-list @out;
 my $out    = @out.join(' ');
-
-plan 42;
-
-# basic in/out
-# 42 tests
 
 # default, keep existing case
 is-deeply abbreviations($in, :$debug), %out-HA, "string in, default hash HA out";
