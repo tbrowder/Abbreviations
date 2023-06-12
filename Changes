@@ -1,9 +1,22 @@
 {{$NEXT}}
-    - Create a new output format: HA (Hash Abbrev)
+    - Removed the unneeded 'is export' trait from sub 'abbreviations'.
+    - Improved sorting routines for consistency and expected results
+      by using an updated 'sort-list' function to clarify the
+      type and order of the various sorting types
+      defined.
+      + Added an enum Sort-type to define the sort types
+      + Made the default sort type LS (length first,
+        then by string order).
+      + Added an option to reverse the output
+      + Added tests
+    - Updated the README for improved grammar and better
+      coverage of details.
+    - Added a :$min-length parameter for abbreviations.
+    - Created a new output format: HA (Hash Abbrev)
       consisting of the word as key and its shortest
       abbreviation as its value.
-      + add tests for it
-    - Make the default output the HA type.
+      + added tests for it
+    - Made the default output the HA type.
     - Use the three-os test workflow.
 
 2.0.0  2022-07-23T17:49:28-05:00
