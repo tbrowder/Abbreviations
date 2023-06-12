@@ -1,6 +1,7 @@
 unit module Abbreviations;
 
-enum Out-type is export <S L AH AL H HA>;
+enum Out-type  is export < S L AH AL H HA >; # String, List, AbbrevHash, Hash, HashAbbrev
+enum Sort-type is export < SL LS SS LL>;     # StrLength, LengthStr, Str, Length
 
 # define  "aliases" for convenience
 our &abbrevs is export         = &abbreviations;
@@ -13,16 +14,17 @@ our &a       is export(:a)     = &abbreviations;
 
 #| The calling program
 sub abbreviations($word-set,
-                  :$out-type = HA,
+                  :$out-type = HA, #= the default
                   :$lower-case,
+                  :$min-length,    #= minimum abbreviation length
                   :$debug,
                  ) is export {
     # Given a set of words, determine the shortest unique abbreviation
     # for each word.
 
     my @abbrev-words;
-    my @input-order; # holds the original order before any lower-casing
-    my @input-order-lower-case;
+    my @input-order; #= holds the original order but modified to remove 
+                     #= dups and any lower-casing
 
     # Determine the input type and generate the input word lists accordingly
     if $word-set ~~ Str {
@@ -30,11 +32,11 @@ sub abbreviations($word-set,
         @input-order  = @abbrev-words;
     }
     elsif $word-set ~~ List {
-        @abbrev-words = @($word-set);
+        @abbrev-words = $word-set.words;
         @input-order  = @abbrev-words;
     }
     elsif $word-set ~~ Hash {
-        @abbrev-words = $word-set.keys;
+        @abbrev-words = sort-list $word-set.keys;
         @input-order  = @abbrev-words; # check docs, also add a test to check it
     }
     else {
@@ -47,34 +49,37 @@ sub abbreviations($word-set,
 
     # Remove any dups
     @abbrev-words .= unique;
-    @input-order  = @abbrev-words;
+    @input-order   = @abbrev-words;
 
     if $lower-case {
         $_ .= lc for @abbrev-words;
         @abbrev-words .= unique;
-        @input-order-lower-case = @abbrev-words;
+        @input-order   = @abbrev-words;
     }
 
     # Use the output hash to assemble other output formats
-    # If the input out-type ~~ HA, we are finished
-    my $abbrev-out-type = $out-type ~~ HA ?? HA !! H;
-    my %m = get-abbrevs @abbrev-words, :$abbrev-out-type, :$debug;
+    my $abbrev-out-type;
+    with $out-type {
+        when $_ ~~ HA { $abbrev-out-type = HA }
+        when $_ ~~ AL { $abbrev-out-type = HA }
+        default       { $abbrev-out-type = H  }
+    }
 
-    # The default now is to have the only value be the shortest abbreviation.
+    my %m = get-abbrevs @abbrev-words, :$abbrev-out-type, :$min-length, :$debug;
+
     # The hash output is %m and ready to go (keys are words)
     return %m if $out-type ~~ HA|H; # 'Hash'
 
     # The list and string output formats will have all words (keys) and abbreviations
-    # sorted by default then length (shortest first)
+    # sorted by string order then length.
     my @ow;
     for %m.kv -> $k, $abbrev-list {
-        my @list = @($abbrev-list);
-        @ow.push: |@list;
+        my @list = $abbrev-list.words;
+        @ow.push($_) for @list;
     };
-    @ow .= sort;
     @ow = sort-list @ow;
 
-    return @ow if $out-type ~~ L; # 'List'
+    return @ow           if $out-type ~~ L; # 'List'
     return @ow.join(' ') if $out-type ~~ S; # 'String';
 
     if $out-type ~~ AH {
@@ -83,7 +88,7 @@ sub abbreviations($word-set,
         # each word and its value is that word.
         my %ah;
         for %m.kv -> $word, $abbrev-list {
-            for @($abbrev-list) -> $abbrev {
+            for $abbrev-list.words -> $abbrev {
                 note "ERROR: Unexpected dup abbrev '$abbrev' for word '$word'" if %ah{$abbrev}:exists;
                 %ah{$abbrev} = $word;
             }
@@ -94,22 +99,14 @@ sub abbreviations($word-set,
     }
 
     if $out-type ~~ AL {
-        #=== Output hash converted to AbbrevList:
+        #=== Output hash (HA) converted to AbbrevList:
         # The AbbrevList is the list of the min abbreviations for
         # each word in the original input order.
         my @al;
-        #my @in = @abbrev-words;
         my @in = @input-order;
         for @in -> $w {
             # for each word, add its min abbrev to the list
-            my $m;
-            if $out-type ~~ H {
-                $m = %m{$w}.head
-            }
-            else {
-                $m = %m{$w};
-            }
-            @al.push: $m;
+            @al.push: %m{$w};
         }
 
         note "DEBUG: out-type(AL) in words: {@in}" if $debug;
@@ -122,10 +119,10 @@ sub abbreviations($word-set,
 } # end sub abbreviations
 
 #| This sub is called by sub abbreviations
-sub get-abbrevs(@abbrev-words, :$abbrev-out-type!, :$debug --> Hash) is export(:get-abbrevs) {
+sub get-abbrevs(@abbrev-words, :$abbrev-out-type!, :$min-length, :$debug --> Hash) is export(:get-abbrevs) {
     # @ow - A list of original, unique words (downcased if desired)
     my @ow = @abbrev-words;
-    my %ow;
+    my %ow; # a hash to hold the words to be abbreviated
     %ow{$_} = 1 for @ow;
 
     # %abbrevs  - The final solution should be in the hash with its
@@ -166,9 +163,13 @@ sub get-abbrevs(@abbrev-words, :$abbrev-out-type!, :$debug --> Hash) is export(:
 
     # The hash will later be converted to the default HA (Hash) type unles
     # the caller wants another type. In that case, the H type will
-    # be returned and processed futher if need be.
+    # be returned and processed further if need be.
     my %m; # will hold the hash of words and their abbrevs
     for %abbrevs.kv -> $a, $w {
+        if $min-length.defined {
+            next if $a.chars < $min-length;
+        }
+
         if %m{$w}:exists {
             %m{$w}.push: $a;
         }
@@ -177,104 +178,42 @@ sub get-abbrevs(@abbrev-words, :$abbrev-out-type!, :$debug --> Hash) is export(:
             %m{$w}.push: $a;
         }
     }
-    # Now add the word as an abbreviation for itself
+    # Add the word as an abbreviation for itself
     for %ow.keys -> $w {
         %m{$w}.push: $w;
     }
 
     # Ensure the lists are properly sorted
-    #my %h;
     for %m.kv -> $w, $abbrev-list {
-        my @w = sort-list @($abbrev-list);
+        my @w = sort-list $abbrev-list.words;
         if $abbrev-out-type ~~ HA {
-            #%h{$w} = @w.head;
             %m{$w} = @w.head;
         }
         else {
-            #%h{$w} = @w;
             %m{$w} = @w;
         }
     }
 
-    #%h
     %m
 
 } # sub get-abbrevs
 
-sub sort-list(@list is copy, :$longest-first) is export(:auto, :sort) {
-    # always sort by standard sort first
-    @list .= sort;
+# enum Sort-type is export < SL LS SS LL>;    # StrLength, LengthStr, Str, Length
+sub sort-list(@List, :$type = LS, :$reverse) is export(:auto, :sort) {
+    my @list = @List; 
+    if $type ~~ SL {
+        @list .= sort({.Str, .chars});
+    }
+    elsif $type ~~ LS {
+        @list .= sort({.chars, .Str});
+    }
+    elsif $type ~~ LL {
+        @list .= sort({.chars});
+    }
+    elsif $type ~~ SS {
+        @list .= sort({.Str});
+    }
 
-    return @list.sort({$^b.chars cmp $^a.chars}) if $longest-first;
-
-    # sort by shortest word first
-    @list.sort({$^a.chars cmp $^b.chars});
+    @list .= reverse if $reverse;
+    @list
 } # end sub sort-list
-
-=finish
-
-#| Two subs from Chapter 32 of "Introduction to Algorithms", String Matching
-#| KMP-Matcher(T,P)
-=begin comment
- 1  n = T.length
- 2  m = P.length
- 3  pi = Compute-Prefix-Function(P)
- 4  q = 0                                            // number of characters matched
- 5  for i = 1 to n                                   // scan the text from left to right
- 6      while q > 0 and P[q + 1] not equal T[i]
- 7          q = pi[q]                                // next character does not match
- 8      if P[q + 1] == T[i]
- 9          q = q + 1                                // next character matches
-10      if q == m                                    // is all of P matched?
-11          print "Pattern occurs with shift" i - m
-12          q = pi[q]                                // look for the next match
-=end comment
-sub KMP-Matcher(@T, @P) {
-    my $n = @T.elems; # length
-    my $m = @P.elems; # length
-    my @pi = Compute-Prefix-Function(@P);
-    my $q = 0;                                           # number of characters matched
-    for 1..$n -> $i { # i = 1 to n                       # scan the text from left to right
-        while $q > 0 and @P[$q + 1] != @T[$i] {
-            $q = @pi[$q];                                # next character does not match
-        }
-        if @P[$q + 1] == @T[$i] {
-            $q = $$q + 1;                                # next character matches
-        }
-        if $q == $m {                                    # is all of P matched?
-            # print "Pattern occurs with shift" i - m
-            $q = @pi[$q];                                # look for the next match
-        }
-    }
-}
-
-#| Compute-Prefix-Function(P)
-=begin comment
- 1  m = P.length
- 2  let pi[1..m] be a new array
- 3  pi[1] = 0
- 4  k = 0
- 5  for q = 2 to m
- 6      while k > 0 and P[k + 1] not equal P[q]
- 7          k = pi[k]
- 8      if P[k + 1] == P[q]
- 9          k = k + 1
-10      pi[q] = k
-11  return pi
-=end comment
-sub Compute-Prefix-Function(@P) {
-    my $m = @P.elems;
-    my @pi;                                     # let pi[1..m] be a new array
-    @pi[1] = 0;
-    my $k = 0;
-    for 2..$m -> $q {                           # for q = 2 to m
-        while $k > 0 and @P[$k + 1] != @P[$q] { #     while k > 0 and P[k + 1] not equal P[q]
-            $k = @pi[$k];                       #         k = pi[k]
-            if @P[$k + 1] == @P[$q] {           #     if P[k + 1] == P[q]
-                $k = $k + 1;                    #         k = k + 1
-            }
-            @pi[$q] = $k;                       #     pi[q] = k
-        }
-    }
-    @pi                                         # return pi
-}
