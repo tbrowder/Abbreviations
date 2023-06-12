@@ -119,7 +119,7 @@ sub abbreviations($word-set,
 } # end sub abbreviations
 
 #| This sub is called by sub abbreviations
-sub get-abbrevs(@abbrev-words, :$abbrev-out-type!, :$min-length, :$debug --> Hash) is export(:get-abbrevs) {
+sub get-abbrevs(@abbrev-words, :$abbrev-out-type!, :$min-length, :$debug --> Hash) {
     # @ow - A list of original, unique words (downcased if desired)
     my @ow = @abbrev-words;
     my %ow; # a hash to hold the words to be abbreviated
