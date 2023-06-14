@@ -4,10 +4,7 @@ use Abbreviations :ALL;
 
 my $debug = 0;
 
-#reverse
-#by enum 
-
-# input test data
+# non-numeric input test data
 my @in = <Bc a B>;                    
 # expected
 my @outLS     = <B a Bc>;                    
@@ -23,6 +20,12 @@ is sort-list(@in, :type(LS), :reverse), @outLS-rev, "type LS, reversed";
 
 is sort-list(@in, :type(SL)), @outSL, "type SL";
 is sort-list(@in, :type(SL), :reverse), @outSL-rev, "type SL, reversed";
+
+# numeric sorting
+@in = 1, 3, 2;
+is sort-list(@in, :type(N)), (1,2,3), "numerical sort with numbers";
+@in = 1, 'a', 2;
+is sort-list(@in, :type(N)), (1,2,'a'), "numerical sort with non-numbers";
 
 done-testing;
 
