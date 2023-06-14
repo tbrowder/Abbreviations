@@ -3,7 +3,7 @@
 NAME
 ====
 
-**Abbreviations** - Provides abbreviations for an input set of one or more words
+Abbreviations - Provides abbreviations for an input set of one or more words
 
 SYNOPSIS
 ========
@@ -11,18 +11,45 @@ SYNOPSIS
 ```raku
 use Abbreviations;
 my $words = 'A ab Abcde';
-# The exported routine:
+# The main exported routine:
 my %abbrevs = abbreviations $words;
+say %abbrevs.gist;
+# OUTPUT: «{A => A, Abcde => Ab, ab => a}␤»
 ```
 
-There are two shorter routine name abbreviations one can use that are always exported:
+DESCRIPTION
+===========
+
+**Abbreviations** is a module with one automatically exported subroutine, `abbreviations`, which takes as input a set of words and returns the original set with added unique abbreviations for the set. (Note the input words are also abbreviations in the context of this module.)
+
+Its signature:
+
+    sub abbreviations($word-set,      #= Str, List, or Hash (Set)
+                     :$out-type = HA, #= the default, HashAbbrev
+                     :$lower-case,    #= convert the word st to lowercase
+                     :$min-length,    #= minimum abbreviation length
+                     ) is export {...}
+
+A *word* satisfies the Raku regex `$word ~~ /\S+/` which is quite loose. Using programs can of course further restrict that if need be. For example, for use with module **Opt::Handler** words must satisfy this regex: `$word ~~ /<ident>/`.
+
+The input word set can be in one of three forms: (1) a list (recommended), (2) a string containing the words separated by spaces, or (3) as a hash (or set) with the words being keys of the hash (set members). Duplicate words will be automatically and quietly eliminated.
+
+Note the input word set will not be modified unless the `:lower-case` option is used. In that case, all characters will be transformed to lower-case and any new duplicate words deleted.
+
+If the user wishes, he or she can restrict the minimum length of the generated abbreviations by using the `:$min-length` parameter.
+
+One will normally get the result as a hash with the input words as keys with their shortest abbreviation as values (return type HA), but the return type can be specified via `enum Out-type` if desired by selecting one of the `:$output-type` options. For example:
+
+    my %abbrevs = abbrevs @words, :output-type(AH);
+
+There are two shorter alias names for `sub abbreviations` one can use that are always exported:
 
 ```raku
  abbrevs
  abbrev
 ```
 
-In the sprit of the module, one can `use Abbreviations :ALL;` and have these additional short forms available:
+In the sprit of the module, one can `use Abbreviations :ALL;` and have these additional shorter alias names available:
 
 ```raku
  abbre
@@ -32,33 +59,26 @@ In the sprit of the module, one can `use Abbreviations :ALL;` and have these add
  a
 ```
 
-Each of those is individually available by adding its name as an adverb, e.g.:
+Each of those is individually available by adding its name as an adverb, for example:
 
 ```raku
 use Abbreviations :abb;
 my %abb = abb $words;
 ```
 
-DESCRIPTION
-===========
+### `enum Out-type`
 
-**Abbreviations** is a module with one automatically exported subroutine, `abbreviations`, which takes as input a set of words and returns the original set with added unique abbreviations for the set. (Note the input words are also abbreviations in the context of this module.)
+    enum Out-type is export <HA H AH AL L S >;
 
-A *word* satisfies the Raku regex `$word ~~ /\S+/` which is quite loose. Using programs can of course further restrict that if need be. For example, for use with module **Opt::Handler** words must satisfy this regex: `$word ~~ /<ident>/`. (**CAUTION**: Words containing other than letters have not been tested and results are unknown. The author is willing to investigate those words if any user is so interested and files an issue indicating such.)
+The *enum* `Out-type` is exported automatically as it is required for use of `sub abbreviations`. It has the following types:
 
-The input word set can be in one of two forms: a list or a string containing the words separated by spaces. Duplicate words will be automatically and quietly eliminated. An empty word set will cause an exception.
+  * `HA` (HashAbbrev)
 
-Note the input word set will not be modified unless the `:lower-case` option is used. In that case, all characters will be transformed to lower-case.
-
-One will normally get the result as a hash, but the return type can be specified via an `enum` if desired by selecting one of the `:out-type` options: `AH` (AbbrevHash), `AL` (AbbrevList), `H` (Hash), `L` (List), or `S` (String). For example,
-
-    my %abbrevs = abbrevs @words, :out-type(AH);
-
-### Output types by `enum Out-type`
+The default *HashAbbrev* (`HA`) returned will have input words as keys whose value will be the shortest valid abbreviation.
 
   * `H` (Hash)
 
-The default *Hash* (`H`) returned will have input words as keys whose value will be a sorted list of one or more valid abbreviations (sorted by length, shortest first).
+A variant of `HA`, the *Hash* (`H`) returned will have input words as keys whose value will be a sorted list of its valid abbreviations (sorted by length, shortest first, then by `Str` order).
 
   * `AH` (AbbrevHash)
 
@@ -69,12 +89,17 @@ An *AbbrevHash* (`AH`) is keyed by all of the valid abbreviations for the input 
 An *AbbrevList* (`AL`) is special in that the returned list is the one, shortest abbreviation for each of the input words in input order. For example,
 
     my @w = <Monday Tuesday Wednesday Thursday Friday Saturday Sunday>;
-    my @abb = abbrevs @w, :lower-case, :out-type(AL);
-    say @abb; # OUTPUT: «[m tu w th f sa su]␤»
+    my @abb = abbrevs @w, :output-type(AL);
+    say @abb; # OUTPUT: «M Tu W Th F Sa Su␤»
+
+Note that a hash (or set) input type will not reliably provide this output as expected since the keys are not stored in order. Instead, the ouput will be based on a list of the hash's keys. In effect, entering `%out = abbreviations %in` is the same as:
+
+    my @inputlist = %in.keys.sort({.chars, .Str}';
+    my %out = abbreviations @inputlist;
 
   * `L` (List)
 
-A *List* (`L`) contains all of the valid abbreviations for the input word list, including the words themselves, sorted first by the default Raku sort and then by length (shortest first).
+A *List* (`L`) contains all of the valid abbreviations for the input word list, including the words themselves, sorted by length, then character order.
 
   * `S` (String)
 
@@ -82,7 +107,7 @@ A *String* (`S`) is the string formed by joining the *List* by a single space be
 
 ### Improved abbreviation search
 
-The abbreviation algorithm has been improved in the following way: The input word set is formed into subgroups comprised of each input word. Abbreviations are created for each word, abbreviations shared by two or words are eliminated, then all those abbreviations are combined into one set. The result will be the largest possible set of unique abbreviations for a given input word set.
+The abbreviation algorithm has been improved from the original (as found on [https://rosettacode.org](https://rosettacode.org)) in the following way: The input word set is formed into subgroups comprised of each input word. Abbreviations are created for each word, abbreviations shared by two or words are eliminated, then all those abbreviations are combined into one set. The result will be the largest possible set of unique abbreviations for a given input word set.
 
 For example, given an input set consisting of the words `A ab Abcde`, the default output hash of abbreviations (with the original words as keys) contains a total of seven abbreviations:
 
@@ -101,18 +126,35 @@ The result is
         ab    => ['ab],
         abcde => ['abc', 'abcd', 'abcde'],
 
+Notice the input word **ab** now has only one abbreviation and **abcde** has only three.
+
 Other exported symbols
 ----------------------
 
 ### `sub sort-list`
 
-    sub sort-list(@list, :longest-first --> List) is export(:sort) {...}
+    sub sort-list(@list, :$type = SL, :$reverse --> List) is export(:sort)
+    {...}
 
-This routine sorts the input list first by the default Raku sort and then by word length. The order by length is by shortest abbreviation first unless the `:longest-first` option is used. This is the routine used for all the lists produced as output in this module *except* for the *AbbrevList* (`AL`) which keeps the original word set order.
+By default, this routine sorts all lists by word length, then by Str order. The order by length is by shortest abbreviation first unless the `:$reverse` option is used. This is the routine used for all the lists produced as output in this module *except* for the *AbbrevList* (`AL`) which keeps the original word set order.
 
-### `enum Out-type`
+The routine can be modified for other uses by choosing another `$type` by another of the <enum Sort-type>s.
 
-The *enum* `Out-type` is exported automatically as it is required for use of `sub abbreviations`.
+### `enum Sort-type`
+
+    enum Sort-type is export(:sort) < SL LS SS LL N>;
+
+The `Sort-type`s are:
+
+  * SL - order by Str, then order by Length
+
+  * LS - order by Length, then order by Str
+
+  * SS - Str order only
+
+  * LL - Length order only
+
+  * N - Numerical order only (falls back to SS if any words are not numbers)
 
 AUTHOR
 ======
@@ -131,7 +173,7 @@ CREDITS
 COPYRIGHT and LICENSE
 =====================
 
-Copyright © 2020-2022 Tom Browder
+Copyright © 2020-2023 Tom Browder
 
 This library is free software; you may redistribute or modify it under the Artistic License 2.0.
 

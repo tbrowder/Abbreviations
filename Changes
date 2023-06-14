@@ -17,7 +17,7 @@
       abbreviation as its value.
       + added tests for it
     - Made the default output the HA type.
-    - Use the three-os test workflow.
+    - Use the three-OS test workflow.
 
 2.0.0  2022-07-23T17:49:28-05:00
     - Remove the auto-abbreviate sub and rewrite the get-abbrevs sub
