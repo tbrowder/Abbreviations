@@ -94,7 +94,7 @@ enum Out-type is export <HA H AH AL L S >;
 =end code
 
 The I<enum> C<Out-type> is exported automatically as it is required
-for use of C<sub abbreviations>. It has the following types:
+for using C<sub abbreviations>. It has the following types:
 
 =item C<HA> (HashAbbrev)
 
