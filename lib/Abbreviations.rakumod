@@ -1,7 +1,7 @@
 unit module Abbreviations;
 
 enum Out-type  is export < S L AH AL H HA >; # String, List, AbbrevHash, Hash, HashAbbrev
-enum Sort-type is export < SL LS SS LL>;     # StrLength, LengthStr, Str, Length
+enum Sort-type is export < SL LS SS LL N>;   # StrLength, LengthStr, Str, Length, Numeric (or Str)
 
 # define  "aliases" for convenience
 our &abbrevs is export         = &abbreviations;
@@ -198,7 +198,7 @@ sub get-abbrevs(@abbrev-words, :$abbrev-out-type!, :$min-length, :$debug --> Has
 
 } # sub get-abbrevs
 
-# enum Sort-type is export < SL LS SS LL>;    # StrLength, LengthStr, Str, Length
+# enum Sort-type is export < SL LS SS LL N >; # StrLength, LengthStr, Str, Length, Number
 sub sort-list(@List, :$type = LS, :$reverse) is export(:auto, :sort) {
     my @list = @List; 
     if $type ~~ SL {
@@ -212,6 +212,18 @@ sub sort-list(@List, :$type = LS, :$reverse) is export(:auto, :sort) {
     }
     elsif $type ~~ SS {
         @list .= sort({.Str});
+    }
+    elsif $type ~~ N  {
+        my $is-numeric = True;
+        for @list {
+            $is-numeric = False unless $_.Numeric;
+        }
+        if $is-numeric {
+            @list .= sort({ $^a <=> $^b });
+        }
+        else {
+            @list .= sort({.Str});
+        }
     }
 
     @list .= reverse if $reverse;
