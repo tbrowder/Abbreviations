@@ -70,7 +70,7 @@ my %abb = abb $words;
 
     enum Out-type is export <HA H AH AL L S >;
 
-The *enum* `Out-type` is exported automatically as it is required for use of `sub abbreviations`. It has the following types:
+The *enum* `Out-type` is exported automatically as it is required for using `sub abbreviations`. It has the following types:
 
   * `HA` (HashAbbrev)
 
