@@ -196,13 +196,14 @@ sub sort-list(@list, :$type = SL, :$reverse --> List) is export(:sort)
 =end code
 
 By default, this routine sorts all lists by word length, then by Str
-order. The order by length is by shortest abbreviation first unless
+order. The order by length is by the shortest abbreviation first unless
 the C<:$reverse> option is used. This is the routine used for all the
 lists produced as output in this module I<except> for the
 I<AbbrevList> (C<AL>) which keeps the original word set order.
 
-The routine can be modified for other uses by choosing another
-C<$type> by another of the <enum Sort-type>s.
+The routine can be modified for other uses by using the 
+C<:$type> parameter to choose another
+of the <enum Sort-type>s.
 
 =head3 C<enum Sort-type>
 

@@ -136,9 +136,9 @@ Other exported symbols
     sub sort-list(@list, :$type = SL, :$reverse --> List) is export(:sort)
     {...}
 
-By default, this routine sorts all lists by word length, then by Str order. The order by length is by shortest abbreviation first unless the `:$reverse` option is used. This is the routine used for all the lists produced as output in this module *except* for the *AbbrevList* (`AL`) which keeps the original word set order.
+By default, this routine sorts all lists by word length, then by Str order. The order by length is by the shortest abbreviation first unless the `:$reverse` option is used. This is the routine used for all the lists produced as output in this module *except* for the *AbbrevList* (`AL`) which keeps the original word set order.
 
-The routine can be modified for other uses by choosing another `$type` by another of the <enum Sort-type>s.
+The routine can be modified for other uses by using the `:$type` parameter to choose another of the <enum Sort-type>s.
 
 ### `enum Sort-type`
 
