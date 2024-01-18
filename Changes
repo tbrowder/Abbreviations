@@ -1,4 +1,5 @@
 {{$NEXT}}
+    - Separate tests into one for each arg
     - Make the default output for a single word be a 
       suitable word for an arg regex selection, e.g.,
         abbrev "arg" => "a|ar|arg"
