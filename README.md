@@ -27,8 +27,9 @@ A natural consequence of generating all the abbreviations for a set of one word 
     use Abbreviations;
     use Test;
     my $target = "Args";
-    my $junction = abbrev $target; # OUTPUT: "A|Ar|Arg|Args"; 
+    my $junction = abbrev $target; # OUTPUT: «"A|Ar|Arg|Args"␤»;
     my $res = False;
+    my @w = $junction.split('|');
     for @w {
         when /$junction/ {
             $res = True
@@ -37,7 +38,7 @@ A natural consequence of generating all the abbreviations for a set of one word 
             $res = False
         }
     }
-    is $res, True; # OUTPUT: ok 1
+    is $res, True; # OUTPUT: «ok 1␤»
 
 Its signature:
 
