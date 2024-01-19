@@ -112,7 +112,7 @@ subtest {
     my $target = "Args";
     my $junction = abbrev $target; # OUTPUT: "A|Ar|Arg|Args"; 
     my $res = False;
-    for @w {
+    for $junction.split(/'|'/) {
         when /$junction/ { $res = True  }
         default          { $res = False }
     }
