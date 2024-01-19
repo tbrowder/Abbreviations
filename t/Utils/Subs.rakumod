@@ -5,17 +5,16 @@ use Abbreviations :ALL;
 sub test-junction(
     :$target!,
     :@args!,
-    :$junction is copy,
+    :$regex!,
     :$debug,
+    --> List
 ) is export {
-    unless $junction {
-        $junction = abbrev $target;
-    }
-
+    my $ntests = 0;
     my $nfails = 0;
     my $res;
     for @args { 
-        when /<$junction>/ { 
+        ++$ntests; 
+        when $_ ~~ $regex { 
             $res = True  
         }
         default { 
@@ -23,5 +22,5 @@ sub test-junction(
             ++$nfails 
         }
     }
-    $nfails
+    $ntests, $nfails
 }
