@@ -1,5 +1,3 @@
-[![Actions Status](https://github.com/tbrowder/Abbreviations/workflows/test/badge.svg)](https://github.com/tbrowder/Abbreviations/actions)
-
 NAME
 ====
 
