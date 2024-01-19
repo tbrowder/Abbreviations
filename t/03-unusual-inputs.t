@@ -4,7 +4,7 @@ use Abbreviations :ALL;
 
 my $debug = 0;
 
-plan 19;
+plan 20;
 
 # good input test data
 my @in = <A ab Abcde>;                     # arbitrary input order
@@ -107,3 +107,14 @@ for @w {
 }
 is $res, False;
 
+subtest {
+    # example in README
+    my $target = "Args";
+    my $junction = abbrev $target; # OUTPUT: "A|Ar|Arg|Args"; 
+    my $res = False;
+    for @w {
+        when /$junction/ { $res = True  }
+        default          { $res = False }
+    }
+    is $res, True, "README example"; # OUTPUT: ok 1
+}

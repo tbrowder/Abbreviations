@@ -22,6 +22,23 @@ DESCRIPTION
 
 **Abbreviations** is a module with one automatically exported subroutine, `abbreviations`, which takes as input a set of words and returns the original set with added unique abbreviations for the set. (Note the input words are also abbreviations in the context of this module.)
 
+A natural consequence of generating all the abbreviations for a set of one word is this: the ouput provides the parts of a junction which matches any partial length of the target word. For example, given a target word 'Args':
+
+    use Abbreviations;
+    use Test;
+    my $target = "Args";
+    my $junction = abbrev $target; # OUTPUT: "A|Ar|Arg|Args"; 
+    my $res = False;
+    for @w {
+        when /$junction/ {
+            $res = True
+        }
+        default {
+            $res = False
+        }
+    }
+    is $res, True; # OUTPUT: ok 1
+
 Its signature:
 
     sub abbreviations($word-set,      #= Str, List, or Hash (Set)

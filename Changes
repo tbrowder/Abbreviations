@@ -2,6 +2,7 @@
     - Make the default output for a single word be a 
       suitable word for an arg regex selection, e.g.,
         abbrev "Args" => "A|Ar|Arg|Args"
+        + Add info in the README
     - Separate tests into one for each arg
 
 2.1.0  2023-06-14T16:05:14-05:00
