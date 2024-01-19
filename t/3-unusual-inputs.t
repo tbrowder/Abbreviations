@@ -4,7 +4,7 @@ use Abbreviations :ALL;
 
 my $debug = 0;
 
-#plan 20;
+plan 15;
 
 # good input test data
 my @in = <A ab Abcde>;                     # arbitrary input order
@@ -65,74 +65,3 @@ my $dow = abbrevs @w, :lower-case, :out-type(AL), :$debug;
 is @dow, @d, "AL test on days of the week";
 
 is-deeply $dow, @d, "AL test on days of the week";
-
-# Single word
-@w = <Args>;
-$dow = abbrevs @w;
-is $dow, "A|Ar|Arg|Args", "Single word => /regex junction/";
-
-# input tests
-@w = <A Ar Arg Args>;
-my $res = False;
-for @w {
-    when /(A|Ar|Arg|Args)/ {
-        $res = True
-    }
-    default {
-        $res = False
-    }
-}
-is $res, True;
-
-my $junction = 'A|Ar|Arg|Args';
-$res = False;
-for @w {
-    when /<$junction>/ {
-        $res = True
-    }
-    default {
-        $res = False
-    }
-}
-is $res, True;
-
-$junction = "A|Ar|Arg|Args|N";
-$res = False;
-for @w {
-    when /^<$junction>/ {
-        $res = True
-    }
-    default {
-        $res = False
-    }
-}
-is $res, False;
-
-subtest {
-    # example in README
-    my $target = "Args";
-    my $junction = abbrev $target; # OUTPUT: "A|Ar|Arg|Args";
-    my $res = False;
-    for @w { #$junction.split(/'|'/) {
-        when /<$junction>/ { $res = True  }
-        default          { $res = False }
-    }
-    is $res, True, "README example"; # OUTPUT: ok 1
-}
-
-done-testing;
-
-sub test-args(
-    :$target,
-    :@args,
-    :$debug,
-) {
-    my $junction = abbrev $target; # OUTPUT: "A|Ar|Arg|Args";
-    my $res = False;
-    for @args { 
-        when /<$junction>/ { $res = True  }
-        default            { $res = False }
-    }
-    is $res, True, "README example"; # OUTPUT: ok 1
-}
-

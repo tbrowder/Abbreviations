@@ -4,6 +4,7 @@
         abbrev "Args" => "A|Ar|Arg|Args"
         + Add info in the README
     - Separate tests into one for each arg
+    - Add t/Utils/Subs.rakumod with a 'test-junction' routine
 
 2.1.0  2023-06-14T16:05:14-05:00
     - Removed the unneeded 'is export' trait from sub 'abbreviations'.
