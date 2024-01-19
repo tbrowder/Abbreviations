@@ -71,10 +71,11 @@ is-deeply $dow, @d, "AL test on days of the week";
 $dow = abbrevs @w;
 is $dow, "A|Ar|Arg|Args", "Single word => /regex junction/";
 
-@w = <A|Ar|Arg|Args>; 
+# input tests
+@w = <A Ar Arg Args>;
 my $res = False;
 for @w {
-    when /A|Ar|Arg|Args/ {
+    when /(A|Ar|Arg|Args)/ {
         $res = True
     }
     default {
@@ -83,10 +84,10 @@ for @w {
 }
 is $res, True;
 
-my $junction = "A|Ar|Arg|Args"; 
+my $junction = 'A|Ar|Arg|Args';
 $res = False;
 for @w {
-    when /$junction/ {
+    when /<$junction>/ {
         $res = True
     }
     default {
@@ -95,10 +96,10 @@ for @w {
 }
 is $res, True;
 
-$junction = "A|Ar|Arg|Args|N"; 
+$junction = "A|Ar|Arg|Args|N";
 $res = False;
 for @w {
-    when /$junction/ {
+    when /^<$junction>/ {
         $res = True
     }
     default {
@@ -110,10 +111,10 @@ is $res, False;
 subtest {
     # example in README
     my $target = "Args";
-    my $junction = abbrev $target; # OUTPUT: "A|Ar|Arg|Args"; 
+    my $junction = abbrev $target; # OUTPUT: "A|Ar|Arg|Args";
     my $res = False;
-    for $junction.split(/'|'/) {
-        when /$junction/ { $res = True  }
+    for @w { #$junction.split(/'|'/) {
+        when /<$junction>/ { $res = True  }
         default          { $res = False }
     }
     is $res, True, "README example"; # OUTPUT: ok 1
