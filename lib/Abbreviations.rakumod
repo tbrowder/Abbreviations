@@ -1,7 +1,10 @@
 unit module Abbreviations;
 
-enum Out-type  is export < S L AH AL H HA >; # String, List, AbbrevHash, Hash, HashAbbrev
-enum Sort-type is export < SL LS SS LL N>;   # StrLength, LengthStr, Str, Length, Numeric (or Str)
+# String, List, AbbrevHash, Hash, HashAbbrev
+enum Out-type  is export < S L AH AL H HA >; 
+
+# StrLength, LengthStr, Str, Length, Numeric (or Str)
+enum Sort-type is export < SL LS SS LL N >;   
 
 # define  "aliases" for convenience
 our &abbrevs is export         = &abbreviations;
@@ -14,7 +17,7 @@ our &a       is export(:a)     = &abbreviations;
 
 #| The calling program
 sub abbreviations($word-set,
-                  :$out-type = HA, #= the default
+                  :$out-type is copy = HA, #= the default
                   :$lower-case,
                   :$min-length,    #= minimum abbreviation length
                   :$debug,
@@ -51,7 +54,10 @@ sub abbreviations($word-set,
     @abbrev-words .= unique;
     @input-order   = @abbrev-words;
 
-    if $lower-case {
+    my $nwords = @input-order.elems;
+    $out-type = L if $nwords == 1;
+
+    if $lower-case and $nwords > 1 {
         $_ .= lc for @abbrev-words;
         @abbrev-words .= unique;
         @input-order   = @abbrev-words;
@@ -67,17 +73,22 @@ sub abbreviations($word-set,
 
     my %m = get-abbrevs @abbrev-words, :$abbrev-out-type, :$min-length, :$debug;
 
+    # Default for ONE word is to return it as a single word with all
+    # its abbreviations interleaved with pipes.
+
     # The hash output is %m and ready to go (keys are words)
     return %m if $out-type ~~ HA|H; # 'Hash'
 
-    # The list and string output formats will have all words (keys) and abbreviations
-    # sorted by string order then length.
+    # The list and string output formats will have all words 
+    # (keys) and abbreviations sorted by string order then length.
     my @ow;
     for %m.kv -> $k, $abbrev-list {
         my @list = $abbrev-list.words;
         @ow.push($_) for @list;
     };
     @ow = sort-list @ow;
+
+    return @ow.join('|') if $nwords == 1;
 
     return @ow           if $out-type ~~ L; # 'List'
     return @ow.join(' ') if $out-type ~~ S; # 'String';
@@ -89,7 +100,12 @@ sub abbreviations($word-set,
         my %ah;
         for %m.kv -> $word, $abbrev-list {
             for $abbrev-list.words -> $abbrev {
-                note "ERROR: Unexpected dup abbrev '$abbrev' for word '$word'" if %ah{$abbrev}:exists;
+                if %ah{$abbrev}:exists {
+                    note qq:to/HERE/;
+                    ERROR: Unexpected dup abbrev '$abbrev' for word 
+                    '$word'"
+                    HERE
+                }
                 %ah{$abbrev} = $word;
             }
         }

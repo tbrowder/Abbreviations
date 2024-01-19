@@ -4,7 +4,7 @@ use Abbreviations :ALL;
 
 my $debug = 0;
 
-plan 15;
+plan 16;
 
 # good input test data
 my @in = <A ab Abcde>;                     # arbitrary input order
@@ -66,3 +66,7 @@ is @dow, @d, "AL test on days of the week";
 
 is-deeply $dow, @d, "AL test on days of the week";
 
+# Single word
+my @w = <Args>;
+my $dow = abbrevs @w;
+is $dow, "A|Ar|Arg|Args", "Single word => /regex junction/";
