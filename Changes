@@ -1,4 +1,6 @@
 {{$NEXT}}
+
+2.2.1  2024-01-20T06:43:11-06:00
     - Make the default output for a single word be a 
       suitable word for an arg regex selection, e.g.,
         abbrev "Args" => "A|Ar|Arg|Args"
