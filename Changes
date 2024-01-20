@@ -1,4 +1,31 @@
 {{$NEXT}}
+    - Make the default output for a single word be a 
+      suitable word for an arg regex selection, e.g.,
+        abbrev "Args" => "A|Ar|Arg|Args"
+        + Add info in the README
+    - Separate tests into one for each arg
+    - Add t/Utils/Subs.rakumod with a 'test-junction' routine
+
+2.1.0  2023-06-14T16:05:14-05:00
+    - Removed the unneeded 'is export' trait from sub 'abbreviations'.
+    - Improved sorting routines for consistency and expected results
+      by using an updated 'sort-list' function to clarify the
+      type and order of the various sorting types
+      defined.
+      + Added an enum Sort-type to define the sort types
+      + Made the default sort type LS (length first,
+        then by string order).
+      + Added an option to reverse the output
+      + Added tests
+    - Updated the README for improved grammar and better
+      coverage of details.
+    - Added a :$min-length parameter for abbreviations.
+    - Created a new output format: HA (Hash Abbrev)
+      consisting of the word as key and its shortest
+      abbreviation as its value.
+      + added tests for it
+    - Made the default output the HA type.
+    - Use the three-OS test workflow.
 
 2.0.0  2022-07-23T17:49:28-05:00
     - Remove the auto-abbreviate sub and rewrite the get-abbrevs sub
