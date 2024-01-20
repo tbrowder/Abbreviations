@@ -22,6 +22,16 @@ DESCRIPTION
 
 **Abbreviations** is a module with one automatically exported subroutine, `abbreviations`, which takes as input a set of words and returns the original set with added unique abbreviations for the set. (Note the input words are also abbreviations in the context of this module.)
 
+Its signature:
+
+    sub abbreviations($word-set,      #= Str, List, or Hash (Set)
+                     :$out-type = HA, #= the default, HashAbbrev
+                     :$lower-case,    #= convert the word st to lowercase
+                     :$min-length,    #= minimum abbreviation length
+                     ) is export {...}
+
+A *word* satisfies the Raku regex `$word ~~ /\S+/` which is quite loose. Using programs can of course further restrict that if need be. For example, for use with module **Opt::Handler** words must satisfy this regex: `$word ~~ /<ident>/`.
+
 A natural consequence of generating all the abbreviations for a set of one word is this: the output provides a regex alternation which matches any partial length of the target word. For example, given a target word 'Args':
 
     use Abbreviations;
@@ -39,16 +49,6 @@ A natural consequence of generating all the abbreviations for a set of one word 
         }
     }
     is $res, True; # OUTPUT: «ok 1␤»
-
-Its signature:
-
-    sub abbreviations($word-set,      #= Str, List, or Hash (Set)
-                     :$out-type = HA, #= the default, HashAbbrev
-                     :$lower-case,    #= convert the word st to lowercase
-                     :$min-length,    #= minimum abbreviation length
-                     ) is export {...}
-
-A *word* satisfies the Raku regex `$word ~~ /\S+/` which is quite loose. Using programs can of course further restrict that if need be. For example, for use with module **Opt::Handler** words must satisfy this regex: `$word ~~ /<ident>/`.
 
 As shown in the example above, limiting the input set to one word results in the output of a regex alternation string. The rest of this description applies to sets of two or more words. The input word set can be in one of three forms: (1) a list (recommended), (2) a string containing the words separated by spaces, or (3) as a hash (or set) with the words being keys of the hash (set members). Duplicate words will be automatically and quietly eliminated.
 
