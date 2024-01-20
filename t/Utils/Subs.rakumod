@@ -2,7 +2,7 @@ unit module Subs;
 
 use Abbreviations :ALL;
 
-sub test-junction(
+sub test-regex(
     :$target!,
     :@args!,
     :$regex!,
