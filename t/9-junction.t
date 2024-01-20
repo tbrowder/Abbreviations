@@ -7,7 +7,24 @@ use Subs;
 
 my $debug = 0;
 
-plan 6;
+plan 7;
+
+{
+    # Example from the README
+    my $target = "Args";
+    my $regex = abbrev $target; # OUTPUT: «"A|Ar|Arg|Args"␤»;
+    my $res = False;
+    my @w = $regex.split('|');
+    for @w {
+        when /<$regex>/ {
+            $res = True
+        }
+        default {
+            $res = False
+        }
+    }
+    is $res, True; # OUTPUT: «ok 1␤»
+}
 
 # Single word
 my $target = "Args";
