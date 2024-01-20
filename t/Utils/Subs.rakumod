@@ -2,18 +2,18 @@ unit module Subs;
 
 use Abbreviations :ALL;
 
+# We create a $regex from the abbreviation of the arg .
+# We split that to form the @args input list.
+
 sub test-regex(
-    :$target!,
     :@args!,
     :$regex!,
     :$debug,
-    --> List
+    --> UInt
 ) is export {
-    my $ntests = 0;
     my $nfails = 0;
     my $res;
     for @args { 
-        ++$ntests; 
         when $_ ~~ $regex { 
             $res = True  
         }
@@ -22,5 +22,5 @@ sub test-regex(
             ++$nfails 
         }
     }
-    $ntests, $nfails
+    $nfails
 }

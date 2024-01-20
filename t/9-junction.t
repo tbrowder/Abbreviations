@@ -13,17 +13,15 @@ my $debug = 0;
 my $target = "Args";
 my $junction = abbrevs $target;
 is $junction, "A|Ar|Arg|Args", "Single word => /regex junction/";
+my $regex = /{$junction}/;
 
 my @args = $junction.split("|");
-my ($ntests, $nfails);
+my $nfails;
 my $nargs = @args.elems;
-
-my $regex = /{$junction}/;
 
 # subtest 1
 subtest {
-    ($ntests, $nfails) = test-regex(:$regex, :$target, :@args);
-    is $ntests, $nargs, "ntests $ntests";
+    $nfails = test-regex(:$regex, :@args);
     is $nfails, 0, "expect 0 fails, got $nfails";
 }, "subtest 1";
 
@@ -31,17 +29,16 @@ subtest {
 subtest {
     $target = "Args";
     $regex = /(A|Ar|Arg|Args)/;
-    ($ntests, $nfails) = test-regex(:$regex, :$target, :@args);
-    is $ntests, $nargs, "ntests $ntests";
+    $nfails = test-regex(:$regex, :@args);
     is $nfails, 0, "expect 0 fails, got $nfails";
 }, "subtest 2";
 
 # subtest 3
 subtest {
     $target = "Args";
+    @args = $junction.split("|");
     $regex = /^(A|Ar|Arg|Args)/;
-    ($ntests, $nfails) = test-regex(:$regex, :$target, :@args);
-    is $ntests, $nargs, "ntests $ntests";
+    $nfails = test-regex(:$regex, :@args);
     is $nfails, 0, "Expected 0 fails, got $nfails";
 }, "subtest 3";
 
@@ -49,8 +46,7 @@ subtest {
 subtest {
     $target = "NArgs";
     $regex = /^(A|Ar|Arg|Args)/;
-    ($ntests, $nfails) = test-regex(:$regex, :$target, :@args);
-    is $ntests, $nargs, "ntests $ntests";
+    $nfails = test-regex(:$regex, :@args);
     is $nfails, $nargs, "Expected $nargs fails, got $nfails";
 }, "subtest 4";
 
@@ -58,8 +54,7 @@ subtest {
 subtest {
     $target = "NArgs";
     $regex = /(A|Ar|Arg|Args)/;
-    ($ntests, $nfails) = test-regex(:$regex, :$target, :@args);
-    is $ntests, $nargs, "ntests $ntests";
+    $nfails = test-regex(:$regex, :@args);
     is $nfails, 0, "Expected 0 fails, got $nfails";
 }, "subtest 5";
 
