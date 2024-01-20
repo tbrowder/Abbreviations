@@ -32,6 +32,9 @@ Its signature:
 
 A *word* satisfies the Raku regex `$word ~~ /\S+/` which is quite loose. Using programs can of course further restrict that if need be. For example, for use with module **Opt::Handler** words must satisfy this regex: `$word ~~ /<ident>/`.
 
+A regex alternation for single-word sets
+----------------------------------------
+
 A natural consequence of generating all the abbreviations for a set of one word is this: the output provides a regex alternation which matches any partial length of the target word. For example, given a target word 'Args':
 
     use Abbreviations;
@@ -50,7 +53,12 @@ A natural consequence of generating all the abbreviations for a set of one word 
     }
     is $res, True; # OUTPUT: «ok 1␤»
 
-As shown in the example above, limiting the input set to one word results in the output of a regex alternation string. The rest of this description applies to sets of two or more words. The input word set can be in one of three forms: (1) a list (recommended), (2) a string containing the words separated by spaces, or (3) as a hash (or set) with the words being keys of the hash (set members). Duplicate words will be automatically and quietly eliminated.
+As shown in the example above, limiting the input set to one word results in the output of a regex alternation string. The rest of this description applies to sets of two or more words.
+
+Abbrevians for multiple-word sets
+---------------------------------
+
+The input multiple-word set can be in one of three forms: (1) a list (recommended), (2) a string containing the words separated by spaces, or (3) as a hash (or set) with the words being keys of the hash (set members). Duplicate words will be automatically and quietly eliminated.
 
 Note the input word set will not be modified unless the `:lower-case` option is used. In that case, all characters will be transformed to lower-case and any new duplicate words deleted.
 
