@@ -1,11 +1,14 @@
 {{$NEXT}}
+    - Add an option menu creation program,
+        'create-opt-menu', which in installed
+        into the user's $HOME directory
 
 2.2.2  2024-03-31T09:19:45-05:00
     - Use Zef for Github workflows testing
 
 2.2.1  2024-01-20T06:43:11-06:00
     - Make the default output for a single word be a 
-      suitable word for an arg regex selection, e.g.,
+      suitable word for an argument regex selection, e.g.,
         abbrev "Args" => "A|Ar|Arg|Args"
         + Add info in the README
     - Separate tests into one for each arg

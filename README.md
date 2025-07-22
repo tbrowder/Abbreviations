@@ -44,7 +44,7 @@ A natural consequence of generating all the abbreviations for a set of one word 
     my $res = False;
     my @w = $regex.split('|');
     for @w {
-        when /<$regex>/ {
+        when /<$regex>/ { # use /:i <$regex>/ for case-insensitivity
             $res = True
         }
         default {
@@ -54,6 +54,8 @@ A natural consequence of generating all the abbreviations for a set of one word 
     is $res, True; # OUTPUT: «ok 1␤»
 
 As shown in the example above, limiting the input set to one word results in the output of a regex alternation string. The rest of this description applies to sets of two or more words.
+
+Use the installed binary `create-opt-menu` to create a usable option menu similar to the above for a drop-in solution for your own use. The menu will be written to a text file.
 
 Abbrevians for multiple-word sets
 ---------------------------------
@@ -199,7 +201,7 @@ CREDITS
 COPYRIGHT and LICENSE
 =====================
 
-Copyright © 2020-2023 Tom Browder
+© 2020-2025 Tom Browder
 
 This library is free software; you may redistribute or modify it under the Artistic License 2.0.
 
