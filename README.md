@@ -199,7 +199,7 @@ CREDITS
 COPYRIGHT and LICENSE
 =====================
 
-Copyright © 2020-2023 Tom Browder
+Copyright © 2020-2026 Tom Browder
 
 This library is free software; you may redistribute or modify it under the Artistic License 2.0.
 
