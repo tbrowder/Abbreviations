@@ -1,4 +1,5 @@
 {{$NEXT}}
+    - Correct typos per issues 11 and 12 (thanks to @nightcityblade)
 
 2.2.2  2024-03-31T09:19:45-05:00
     - Use Zef for Github workflows testing

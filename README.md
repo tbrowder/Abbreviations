@@ -56,7 +56,7 @@ A natural consequence of generating all the abbreviations for a set of one word 
 As shown in the example above, limiting the input set to one word results in the output of a regex alternation string. The rest of this description applies to sets of two or more words.
 
 Abbreviations for multiple-word sets
----------------------------------
+------------------------------------
 
 The input multiple-word set can be in one of three forms: (1) a list (recommended), (2) a string containing the words separated by spaces, or (3) as a hash (or set) with the words being keys of the hash (set members). Duplicate words will be automatically and quietly eliminated.
 
@@ -202,3 +202,4 @@ COPYRIGHT and LICENSE
 Copyright © 2020-2023 Tom Browder
 
 This library is free software; you may redistribute or modify it under the Artistic License 2.0.
+
